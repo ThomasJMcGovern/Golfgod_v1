@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -17,24 +17,6 @@ export default function PlayersPage() {
   const router = useRouter();
   const [selectedPlayerId, setSelectedPlayerId] = useState<Id<"players"> | null>(null);
   const [activeTab, setActiveTab] = useState("players");
-
-  // Seed data on first load (development only)
-  const seedPlayersMutation = useMutation(api.seed.seedPlayers);
-  const seedStatsMutation = useMutation(api.seed.seedPlayerStats);
-
-  useEffect(() => {
-    // Auto-seed data in development
-    const seedData = async () => {
-      try {
-        await seedPlayersMutation();
-        await seedStatsMutation();
-      } catch (error) {
-        // Ignore errors if data already seeded
-        console.log("Data might already be seeded");
-      }
-    };
-    seedData();
-  }, []);
 
   return (
     <>
