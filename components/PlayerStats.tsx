@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ExternalLink, TrendingUp, Target, Activity, DollarSign } from "lucide-react";
+import { Activity, TrendingUp, Target, DollarSign } from "lucide-react";
 
 interface PlayerStatsProps {
   playerId: Id<"players">;

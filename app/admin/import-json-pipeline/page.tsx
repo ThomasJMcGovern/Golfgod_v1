@@ -21,7 +21,6 @@ export default function ImportJSONPipelinePage() {
   // Mutations and queries
   const clearResults = useMutation(api.dataManagement.clearTournamentResults);
   const importPlayer = useMutation(api.importPipeline.importTournamentDataFromJSON);
-  const batchImport = useMutation(api.importPipeline.batchImportFromJSONFiles);
   const validateData = useQuery(api.importPipeline.validateImportedData);
   const importProgress = useQuery(api.importPipeline.getImportProgress);
   const dbStatus = useQuery(api.dataManagement.validateDatabase);

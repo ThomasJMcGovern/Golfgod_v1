@@ -1,3 +1,11 @@
+#!/bin/bash
+
+# This script fixes all ESLint errors for Vercel deployment
+
+echo "Fixing ESLint errors for Vercel deployment..."
+
+# Fix admin/complete-reset/page.tsx
+cat > app/admin/complete-reset/page.tsx << 'EOF'
 "use client";
 
 import { useState } from "react";
@@ -166,3 +174,23 @@ export default function CompleteResetPage() {
     </div>
   );
 }
+EOF
+
+echo "Fixed admin/complete-reset/page.tsx"
+
+# Fix admin/import-json-pipeline/page.tsx - remove unused variable
+sed -i '' '24d' app/admin/import-json-pipeline/page.tsx 2>/dev/null || sed -i '24d' app/admin/import-json-pipeline/page.tsx
+
+# Fix admin/ultimate-fix/page.tsx - remove unused imports
+sed -i '' 's/, AlertTitle//g' app/admin/ultimate-fix/page.tsx 2>/dev/null || sed -i 's/, AlertTitle//g' app/admin/ultimate-fix/page.tsx
+
+# Fix app/page.tsx - remove unused import
+sed -i '' '/CardContent/d' app/page.tsx 2>/dev/null || sed -i '/CardContent/d' app/page.tsx
+
+# Fix app/players/page.tsx - remove unused import
+sed -i '' '/useQuery/d' app/players/page.tsx 2>/dev/null || sed -i '/useQuery/d' app/players/page.tsx
+
+# Fix components/PlayerStats.tsx - remove unused imports
+sed -i '' '/ExternalLink/d' components/PlayerStats.tsx 2>/dev/null || sed -i '/ExternalLink/d' components/PlayerStats.tsx
+
+echo "Script complete! Run 'npm run build' to test."

@@ -5,11 +5,11 @@ import { useState } from "react";
 import { Authenticated, Unauthenticated } from "convex/react";
 import Dashboard from "@/components/Dashboard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Trophy, BarChart3, ChevronRight } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function Home() {
   const { signIn } = useAuthActions();

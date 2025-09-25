@@ -12,7 +12,17 @@ import { ChevronLeft, Trash2, AlertTriangle, CheckCircle } from "lucide-react";
 export default function ClearDataPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    message?: string;
+    deleted?: number | {
+      players?: number;
+      playerStats?: number;
+      tournamentResults?: number;
+      userFollows?: number;
+    };
+    hasMoreData?: boolean;
+    error?: string;
+  } | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const clearAllData = useMutation(api.clearData.clearAllData);
