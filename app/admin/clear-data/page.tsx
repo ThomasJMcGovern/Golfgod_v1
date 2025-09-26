@@ -25,21 +25,17 @@ export default function ClearDataPage() {
   } | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const clearAllData = useMutation(api.clearData.clearAllData);
-  const clearPlayersData = useMutation(api.clearData.clearPlayersData);
-  const clearTournamentResults = useMutation(api.clearData.clearTournamentResults);
+  const clearAllData = useMutation(api.dataManagement.clearDatabase);
+  const clearPlayersData = useMutation(api.dataManagement.clearPlayersWithCascade);
+  const clearTournamentResults = useMutation(api.dataManagement.clearTournamentResults);
 
   const handleClearAll = async () => {
     setIsLoading(true);
     setResult(null);
     try {
-      const res = await clearAllData();
+      const res = await clearAllData({ tables: ["all"] });
       setResult(res);
-
-      // If there's more data, don't hide the confirm dialog so user can continue
-      if (!res.hasMoreData) {
-        setShowConfirm(false);
-      }
+      setShowConfirm(false);
     } catch (error) {
       setResult({ error: error instanceof Error ? error.message : "Failed to clear data" });
       setShowConfirm(false);
@@ -52,7 +48,7 @@ export default function ClearDataPage() {
     setIsLoading(true);
     setResult(null);
     try {
-      const res = await clearPlayersData();
+      const res = await clearPlayersData({ preserveAuth: true });
       setResult(res);
     } catch (error) {
       setResult({ error: error instanceof Error ? error.message : "Failed to clear players data" });
@@ -213,10 +209,10 @@ export default function ClearDataPage() {
                     <div className="mt-2 text-sm">
                       {typeof result.deleted === 'object' ? (
                         <ul>
-                          {result.deleted.players > 0 && <li>Players deleted: {result.deleted.players}</li>}
-                          {result.deleted.playerStats > 0 && <li>Player stats deleted: {result.deleted.playerStats}</li>}
-                          {result.deleted.tournamentResults > 0 && <li>Tournament results deleted: {result.deleted.tournamentResults}</li>}
-                          {result.deleted.userFollows > 0 && <li>User follows deleted: {result.deleted.userFollows}</li>}
+                          {result.deleted?.players && result.deleted.players > 0 && <li>Players deleted: {result.deleted.players}</li>}
+                          {result.deleted?.playerStats && result.deleted.playerStats > 0 && <li>Player stats deleted: {result.deleted.playerStats}</li>}
+                          {result.deleted?.tournamentResults && result.deleted.tournamentResults > 0 && <li>Tournament results deleted: {result.deleted.tournamentResults}</li>}
+                          {result.deleted?.userFollows && result.deleted.userFollows > 0 && <li>User follows deleted: {result.deleted.userFollows}</li>}
                         </ul>
                       ) : (
                         <p>Records deleted: {result.deleted}</p>

@@ -1,80 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChevronLeft } from "lucide-react";
 
 export default function FixRankingsPage() {
-  const [fixResult, setFixResult] = useState<any>(null);
-  const missingRanks = useQuery(api.fixRankings.checkMissingTopRankings);
-  const fixScheffler = useMutation(api.fixRankings.fixSchefflerRanking);
-
-  const handleFixScheffler = async () => {
-    try {
-      const result = await fixScheffler();
-      setFixResult(result);
-      // Refresh the page after 2 seconds
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } catch (error) {
-      setFixResult({ error: error instanceof Error ? error.message : "Failed to fix" });
-    }
-  };
+  const router = useRouter();
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Fix Rankings</h1>
-
-      <div className="space-y-4">
-        {missingRanks && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Current Top 10 Rankings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {missingRanks.currentTop10.map((player, i) => (
-                  <div key={i} className="flex gap-4">
-                    <span className="font-bold">#{player.rank}</span>
-                    <span>{player.name}</span>
-                  </div>
-                ))}
+    <div className="min-h-screen bg-background">
+      <header className="border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push("/")}
+                className="mr-3"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold">Rankings</h1>
+                <span className="text-sm text-muted-foreground">Player rankings management</span>
               </div>
+            </div>
+          </div>
+        </div>
+      </header>
 
-              {missingRanks.missingTopRanks.length > 0 && (
-                <div className="mt-4 p-4 bg-red-50 rounded">
-                  <p className="font-semibold text-red-600">Missing Rankings:</p>
-                  <p>{missingRanks.missingTopRanks.join(", ")}</p>
-                </div>
-              )}
-
-              <div className="mt-4 p-4 bg-blue-50 rounded">
-                <p>Has Scottie Scheffler: {missingRanks.hasScheffler ? "Yes" : "No"}</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Fix Scottie Scheffler Ranking</CardTitle>
+            <CardTitle>Rankings Management</CardTitle>
+            <CardDescription>
+              Player rankings are managed through the import pipeline
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleFixScheffler} className="w-full">
-              Set Scottie Scheffler as #1
+            <p className="text-muted-foreground">
+              Player rankings and statistics are now imported and managed through the JSON import pipeline.
+              All 100 PGA Tour players have been imported with their complete tournament history.
+            </p>
+            <Button
+              className="mt-4"
+              onClick={() => router.push("/players")}
+            >
+              View Players
             </Button>
-
-            {fixResult && (
-              <div className={`mt-4 p-4 rounded ${fixResult.error ? 'bg-red-50' : 'bg-green-50'}`}>
-                <pre>{JSON.stringify(fixResult, null, 2)}</pre>
-              </div>
-            )}
           </CardContent>
         </Card>
-      </div>
+      </main>
     </div>
   );
 }

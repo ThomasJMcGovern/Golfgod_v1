@@ -25,7 +25,7 @@ export default function CompleteResetPage() {
   const [error, setError] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const completeReset = useMutation(api.completeReset.completeReset);
+  const completeReset = useMutation(api.dataManagement.clearDatabase);
 
   const handleCompleteReset = async () => {
     setIsLoading(true);
@@ -33,7 +33,7 @@ export default function CompleteResetPage() {
     setError(null);
 
     try {
-      const resetResult = await completeReset();
+      const resetResult = await completeReset({ tables: ["all"] });
       setResult(resetResult as ResetResult);
       setShowConfirm(false);
     } catch (err) {

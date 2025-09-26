@@ -266,7 +266,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                     <td className="py-3 text-gray-600">{result.score}</td>
                                     <td className="py-3 text-gray-600">{result.overall}</td>
                                     <td className="py-3 text-right font-medium">
-                                      {formatEarnings(result.earnings)}
+                                      {formatEarnings(result.earnings || 0)}
                                     </td>
                                   </tr>
                                 ))}
@@ -278,7 +278,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                   </td>
                                   <td className="pt-3 text-right font-bold text-green-600">
                                     {formatEarnings(
-                                      filteredResults.reduce((sum, r) => sum + r.earnings, 0)
+                                      filteredResults.reduce((sum, r) => sum + (r.earnings || 0), 0)
                                     )}
                                   </td>
                                 </tr>
