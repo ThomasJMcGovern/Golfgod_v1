@@ -53,7 +53,14 @@ export async function POST(request: NextRequest) {
         ).join(' ');
 
         // Transform the data - new format has flat tournament array
-        const transformedData = {
+        const transformedData: {
+          player_id: string;
+          playerName: string;
+          years: Array<{
+            year: number;
+            tournaments: any[];
+          }>;
+        } = {
           player_id: data.player_id || playerId,
           playerName: data.player_name || playerName,
           years: []
