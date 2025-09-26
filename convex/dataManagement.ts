@@ -82,23 +82,35 @@ export const clearDatabase = mutation({
   },
 });
 
-// Clear tournament results only
+// Clear tournament results only - with smaller batches to avoid read limits
 export const clearTournamentResults = mutation({
   handler: async (ctx) => {
     let deleted = 0;
     let hasMore = true;
+    const SMALL_BATCH = 20; // Smaller batch to avoid hitting read limits
 
     while (hasMore) {
       const results = await ctx.db
         .query("tournamentResults")
-        .take(BATCH_SIZE);
+        .take(SMALL_BATCH);
 
       if (results.length === 0) {
         hasMore = false;
       } else {
+        // Delete in this batch
         for (const result of results) {
           await ctx.db.delete(result._id);
           deleted++;
+        }
+
+        // If we're hitting limits, return early and let client retry
+        if (deleted >= 1000) {
+          return {
+            success: true,
+            deleted,
+            message: `Deleted ${deleted} tournament results (batch complete, may need to run again)`,
+            hasMore: true
+          };
         }
       }
     }
@@ -106,7 +118,8 @@ export const clearTournamentResults = mutation({
     return {
       success: true,
       deleted,
-      message: `Deleted ${deleted} tournament results`,
+      message: `Deleted all ${deleted} tournament results`,
+      hasMore: false
     };
   },
 });

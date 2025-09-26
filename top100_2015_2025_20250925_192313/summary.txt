@@ -1,0 +1,6 @@
+Top 100 Golf Rankings Scrape Summary
+==================================================
+Date: 2025-09-25 19:27:01
+Players scraped: 100/200
+Total tournaments: 14745
+Output directory: top100_2015_2025_20250925_192313

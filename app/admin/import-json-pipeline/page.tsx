@@ -31,12 +31,31 @@ export default function ImportJSONPipelinePage() {
     setLogs(prev => [...prev, `${timestamp} ${prefix} ${message}`]);
   };
 
-  // Clear all tournament results
+  // Clear all tournament results - may need multiple calls due to read limits
   const handleClearResults = async () => {
     try {
       addLog("Clearing existing tournament results...");
-      const result = await clearResults();
-      addLog(`Cleared ${result.deleted} tournament results`, "success");
+      let totalDeleted = 0;
+      let hasMore = true;
+      let attempts = 0;
+
+      while (hasMore && attempts < 10) {
+        try {
+          const result = await clearResults();
+          totalDeleted += result.deleted;
+          hasMore = result.hasMore || false;
+
+          if (hasMore) {
+            addLog(`Cleared ${result.deleted} results, continuing...`, "info");
+          }
+          attempts++;
+        } catch (err) {
+          addLog(`Error in batch ${attempts + 1}: ${err}`, "error");
+          break;
+        }
+      }
+
+      addLog(`Cleared ${totalDeleted} tournament results total`, "success");
     } catch (error) {
       addLog(`Error clearing results: ${error}`, "error");
     }
@@ -55,7 +74,7 @@ export default function ImportJSONPipelinePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          directory: "/Users/tjmcgovern/golfgod_x_convex/top100_2015_2025_20250924_201118",
+          directory: "/Users/tjmcgovern/golfgod_x_convex/top100_2015_2025_20250925_192313/individual_players",
           batchSize
         }),
       });
