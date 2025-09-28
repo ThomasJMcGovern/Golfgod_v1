@@ -47,21 +47,6 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-2">
               <Button
-                onClick={() => router.push("/admin/clear-data")}
-                variant="outline"
-                size="sm"
-                className="text-red-600 hover:text-red-700"
-              >
-                Clear Data
-              </Button>
-              <Button
-                onClick={() => router.push("/admin/import-csv")}
-                variant="outline"
-                size="sm"
-              >
-                Import CSV
-              </Button>
-              <Button
                 onClick={handleSignOut}
                 variant="default"
                 className="bg-amber-700 hover:bg-amber-800 text-white"
@@ -104,7 +89,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="flex items-center text-sm text-muted-foreground">
                 <Users className="w-4 h-4 mr-1" />
-                156 Players
+                205 Players
               </div>
             </CardContent>
           </Card>
@@ -159,16 +144,16 @@ export default function Dashboard() {
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-3xl font-bold">156</div>
+                <div className="text-3xl font-bold">205</div>
                 <div className="text-sm text-muted-foreground">Active Players</div>
               </div>
 
               {/* Tournaments */}
               <div className="text-center">
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Calendar className="w-8 h-8 text-muted-foreground" />
+                  <Trophy className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-3xl font-bold">36</div>
+                <div className="text-3xl font-bold">100+</div>
                 <div className="text-sm text-muted-foreground">Tournaments</div>
               </div>
 
@@ -177,17 +162,17 @@ export default function Dashboard() {
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3">
                   <BarChart3 className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-3xl font-bold">2024</div>
+                <div className="text-3xl font-bold">2025</div>
                 <div className="text-sm text-muted-foreground">Season Stats</div>
               </div>
 
-              {/* Live Updates */}
+              {/* Player Profiles */}
               <div className="text-center">
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3">
                   <Zap className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-3xl font-bold">Daily</div>
-                <div className="text-sm text-muted-foreground">Live Updates</div>
+                <div className="text-3xl font-bold">193</div>
+                <div className="text-sm text-muted-foreground">Complete Bios</div>
               </div>
             </div>
           </CardContent>

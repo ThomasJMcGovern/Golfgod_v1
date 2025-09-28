@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, TrendingUp, Target, DollarSign } from "lucide-react";
+import { Activity, TrendingUp, Target, DollarSign, User, MapPin, GraduationCap, Calendar, Ruler, Weight } from "lucide-react";
 
 interface PlayerStatsProps {
   playerId: Id<"players">;
@@ -36,6 +36,15 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
   const filteredResults = selectedYear === "all"
     ? tournamentResults
     : tournamentResults?.filter(r => r.year === selectedYear);
+
+  // Calculate age from birthdate
+  const calculateAge = (birthDate: string) => {
+    const [month, day, year] = birthDate.split("/").map(Number);
+    const birth = new Date(year, month - 1, day);
+    const ageDiff = Date.now() - birth.getTime();
+    const ageDate = new Date(ageDiff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
 
   // Format earnings as currency
   const formatEarnings = (amount: number) => {
@@ -193,10 +202,100 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
           {/* Bio Tab */}
           <TabsContent value="bio" className="p-6">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h3 className="text-lg font-semibold">Player Biography</h3>
-              <div className="text-gray-600">
-                <p>Detailed player biography and career highlights coming soon.</p>
+
+              {/* Personal Information */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-700 border-b pb-2">Personal Information</h4>
+
+                  {player.birthDate && (
+                    <div className="flex items-start gap-3">
+                      <Calendar className="h-4 w-4 text-gray-400 mt-1" />
+                      <div>
+                        <p className="text-sm text-gray-500 uppercase tracking-wide">Birthdate</p>
+                        <p className="font-medium">
+                          {player.birthDate} ({calculateAge(player.birthDate)} years old)
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {player.birthPlace && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-4 w-4 text-gray-400 mt-1" />
+                      <div>
+                        <p className="text-sm text-gray-500 uppercase tracking-wide">Birthplace</p>
+                        <p className="font-medium">{player.birthPlace}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {player.college && (
+                    <div className="flex items-start gap-3">
+                      <GraduationCap className="h-4 w-4 text-gray-400 mt-1" />
+                      <div>
+                        <p className="text-sm text-gray-500 uppercase tracking-wide">College</p>
+                        <p className="font-medium">{player.college}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-700 border-b pb-2">Professional Details</h4>
+
+                  {player.turnedPro && (
+                    <div className="flex items-start gap-3">
+                      <User className="h-4 w-4 text-gray-400 mt-1" />
+                      <div>
+                        <p className="text-sm text-gray-500 uppercase tracking-wide">Turned Pro</p>
+                        <p className="font-medium">{player.turnedPro}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {player.swing && (
+                    <div className="flex items-start gap-3">
+                      <Activity className="h-4 w-4 text-gray-400 mt-1" />
+                      <div>
+                        <p className="text-sm text-gray-500 uppercase tracking-wide">Swing</p>
+                        <p className="font-medium">{player.swing}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-6">
+                    {player.height && (
+                      <div className="flex items-start gap-3">
+                        <Ruler className="h-4 w-4 text-gray-400 mt-1" />
+                        <div>
+                          <p className="text-sm text-gray-500 uppercase tracking-wide">Height</p>
+                          <p className="font-medium">{player.height}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {player.weight && (
+                      <div className="flex items-start gap-3">
+                        <Weight className="h-4 w-4 text-gray-400 mt-1" />
+                        <div>
+                          <p className="text-sm text-gray-500 uppercase tracking-wide">Weight</p>
+                          <p className="font-medium">{player.weight} lbs</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Career Highlights - Placeholder for future */}
+              <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-gray-700 mb-3">Career Highlights</h4>
+                <p className="text-gray-600 text-sm">
+                  Detailed career achievements, major wins, and professional highlights will be displayed here.
+                </p>
               </div>
             </div>
           </TabsContent>
