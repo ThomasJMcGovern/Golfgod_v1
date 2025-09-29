@@ -3,7 +3,7 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { Authenticated, Unauthenticated } from "convex/react";
-import Dashboard from "@/components/Dashboard";
+import Dashboard from "@/components/layout/Dashboard";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

@@ -29,6 +29,22 @@ export const getAllPlayers = query({
   },
 });
 
+// Get all player names and IDs for linking (optimized for tournament page)
+export const getAllPlayerNamesAndIds = query({
+  handler: async (ctx) => {
+    const players = await ctx.db
+      .query("players")
+      .withIndex("by_name")
+      .collect();
+
+    return players.map(player => ({
+      _id: player._id,
+      name: player.name,
+      espnId: player.espnId,
+    }));
+  },
+});
+
 // Get single player details by ID
 export const getPlayer = query({
   args: {

@@ -8,11 +8,6 @@ import { authTables } from "@convex-dev/auth/server";
 export default defineSchema({
   ...authTables,
 
-  // Original table
-  numbers: defineTable({
-    value: v.number(),
-  }),
-
   // Player tables
   players: defineTable({
     name: v.string(),
@@ -80,4 +75,32 @@ export default defineSchema({
     .index("by_tournament", ["tournament"])
     .index("by_year", ["year"])
     .index("by_player_name", ["playerName"]),
+
+  // PGA Tournament Schedule table
+  pgaTournaments: defineTable({
+    tournament_id: v.string(),           // e.g., "2024_the_sentry"
+    name: v.string(),                     // Tournament name
+    year: v.number(),                     // Year (2015-2026)
+    dates_raw: v.optional(v.string()),   // Original date string
+    start_date: v.optional(v.string()),  // Start date
+    end_date: v.optional(v.string()),    // End date
+    winner_name: v.optional(v.string()), // Winner's name (for completed tournaments)
+    winner_espn_id: v.optional(v.number()), // ESPN player ID (for completed tournaments)
+    winner_profile_url: v.optional(v.string()), // ESPN profile URL (for completed tournaments)
+    winning_score: v.optional(v.string()),      // Score (e.g., "263 (-29)")
+    prize_money: v.optional(v.number()),        // Prize money in dollars
+    status: v.string(),                   // "completed" or "scheduled"
+    espn_tournament_id: v.optional(v.string()), // ESPN tournament ID
+    espn_leaderboard_url: v.optional(v.string()), // ESPN leaderboard URL
+    scraped_at: v.string(),               // ISO timestamp
+    // Previous winner fields (for scheduled tournaments)
+    previous_winner_name: v.optional(v.string()), // Previous winner's name
+    previous_winner_espn_id: v.optional(v.number()), // Previous winner's ESPN ID
+    previous_winner_profile_url: v.optional(v.string()), // Previous winner's profile URL
+  })
+    .index("by_year", ["year"])
+    .index("by_winner", ["winner_espn_id"])
+    .index("by_tournament_id", ["tournament_id"])
+    .index("by_year_and_name", ["year", "name"])
+    .index("by_status", ["status"]),
 });

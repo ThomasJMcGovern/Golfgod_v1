@@ -13,17 +13,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as analyzePlayerCount from "../analyzePlayerCount.js";
 import type * as auth from "../auth.js";
-import type * as checkExtraPlayers from "../checkExtraPlayers.js";
-import type * as cleanupDuplicates from "../cleanupDuplicates.js";
 import type * as dataManagement from "../dataManagement.js";
-import type * as debugPlayer from "../debugPlayer.js";
 import type * as dev_debug from "../dev/debug.js";
 import type * as dev_myFunctions from "../dev/myFunctions.js";
 import type * as dev_seed from "../dev/seed.js";
-import type * as fixAllDuplicates from "../fixAllDuplicates.js";
-import type * as fixDuplicates from "../fixDuplicates.js";
 import type * as http from "../http.js";
 import type * as importPipeline from "../importPipeline.js";
 import type * as imports from "../imports.js";
@@ -31,6 +25,7 @@ import type * as playerBios from "../playerBios.js";
 import type * as playerPhotos from "../playerPhotos.js";
 import type * as players from "../players.js";
 import type * as tournamentResults from "../tournamentResults.js";
+import type * as tournaments from "../tournaments.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -41,17 +36,11 @@ import type * as tournamentResults from "../tournamentResults.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  analyzePlayerCount: typeof analyzePlayerCount;
   auth: typeof auth;
-  checkExtraPlayers: typeof checkExtraPlayers;
-  cleanupDuplicates: typeof cleanupDuplicates;
   dataManagement: typeof dataManagement;
-  debugPlayer: typeof debugPlayer;
   "dev/debug": typeof dev_debug;
   "dev/myFunctions": typeof dev_myFunctions;
   "dev/seed": typeof dev_seed;
-  fixAllDuplicates: typeof fixAllDuplicates;
-  fixDuplicates: typeof fixDuplicates;
   http: typeof http;
   importPipeline: typeof importPipeline;
   imports: typeof imports;
@@ -59,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   playerPhotos: typeof playerPhotos;
   players: typeof players;
   tournamentResults: typeof tournamentResults;
+  tournaments: typeof tournaments;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

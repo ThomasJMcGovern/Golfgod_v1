@@ -1,21 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { Authenticated, Unauthenticated } from "convex/react";
-import PlayerSelect from "@/components/PlayerSelect";
-import PlayerBio from "@/components/PlayerBio";
-import PlayerRankings from "@/components/PlayerRankings";
-import PlayerStats from "@/components/PlayerStats";
+import PlayerSelect from "@/components/player/PlayerSelect";
+import PlayerBio from "@/components/player/PlayerBio";
+import PlayerRankings from "@/components/player/PlayerRankings";
+import PlayerStats from "@/components/player/PlayerStats";
+import UserMenu from "@/components/layout/UserMenu";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function PlayersPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedPlayerId, setSelectedPlayerId] = useState<Id<"players"> | null>(null);
   const [activeTab, setActiveTab] = useState("players");
+
+  // Check for playerId in URL parameters on mount
+  useEffect(() => {
+    const playerId = searchParams.get("playerId");
+    if (playerId) {
+      setSelectedPlayerId(playerId as Id<"players">);
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -55,12 +65,15 @@ export default function PlayersPage() {
                     </p>
                   </div>
                 </div>
-                <Button
-                  className="bg-green-700 hover:bg-green-800 text-white"
-                  onClick={() => router.push("/")}
-                >
-                  PGA TOUR
-                </Button>
+                <div className="flex items-center gap-4">
+                  <Button
+                    className="bg-green-700 hover:bg-green-800 text-white"
+                    onClick={() => router.push("/")}
+                  >
+                    PGA TOUR
+                  </Button>
+                  <UserMenu />
+                </div>
               </div>
             </div>
           </header>

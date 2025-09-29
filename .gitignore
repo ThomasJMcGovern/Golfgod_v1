@@ -41,7 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 # data files (too large for git)
-/top100_2015_2025_20250924_201118/
+/top100_*
+/pga_tour_schedules_*.json
+/data_imports/
 *.csv
 
 # convex dev files
