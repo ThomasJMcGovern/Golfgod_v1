@@ -16,7 +16,6 @@ import type {
 import type * as auth from "../auth.js";
 import type * as dataManagement from "../dataManagement.js";
 import type * as dev_debug from "../dev/debug.js";
-import type * as dev_myFunctions from "../dev/myFunctions.js";
 import type * as dev_seed from "../dev/seed.js";
 import type * as http from "../http.js";
 import type * as importPipeline from "../importPipeline.js";
@@ -39,7 +38,6 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   dataManagement: typeof dataManagement;
   "dev/debug": typeof dev_debug;
-  "dev/myFunctions": typeof dev_myFunctions;
   "dev/seed": typeof dev_seed;
   http: typeof http;
   importPipeline: typeof importPipeline;

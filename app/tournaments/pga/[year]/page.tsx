@@ -370,7 +370,7 @@ export default function YearTournamentsPage() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} isPreviousWinner={true} />
+                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
                             </TableCell>
                             <TableCell className="text-right">
                               {formatPrizeMoney(tournament.prize_money)}
@@ -416,7 +416,7 @@ export default function YearTournamentsPage() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} isPreviousWinner={true} />
+                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
                             </TableCell>
                             <TableCell className="text-right">
                               {formatPrizeMoney(tournament.prize_money)}
