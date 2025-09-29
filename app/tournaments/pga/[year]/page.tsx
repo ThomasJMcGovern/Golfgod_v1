@@ -7,7 +7,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Trophy, Calendar, Clock } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -216,7 +216,7 @@ export default function YearTournamentsPage() {
     router.push(`/players?playerId=${playerId}`);
   };
 
-  const PlayerLink = ({ name, isPreviousWinner }: { name?: string; isPreviousWinner?: boolean }) => {
+  const PlayerLink = ({ name }: { name?: string }) => {
     if (!name) return <span className="text-gray-500">TBD</span>;
 
     const playerId = findPlayerId(name);

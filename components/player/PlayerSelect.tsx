@@ -114,7 +114,7 @@ export default function PlayerSelect({ onSelectPlayer, selectedPlayerId }: Playe
         const playerOption = option.data;
         return (
           playerOption.label.toLowerCase().includes(searchTerm) ||
-          (playerOption.country && playerOption.country.toLowerCase().includes(searchTerm))
+          (playerOption.country ? playerOption.country.toLowerCase().includes(searchTerm) : false)
         );
       }}
     />
