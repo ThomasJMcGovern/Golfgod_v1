@@ -347,9 +347,18 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                   <th className="pb-3 font-semibold">Date</th>
                                   <th className="pb-3 font-semibold">Tournament</th>
                                   <th className="pb-3 font-semibold text-center">Position</th>
-                                  <th className="pb-3 font-semibold">Score</th>
-                                  <th className="pb-3 font-semibold">Total</th>
+                                  <th className="pb-3 font-semibold text-center">Scorecard</th>
+                                  <th className="pb-3 font-semibold text-center" colSpan={2}>Score</th>
                                   <th className="pb-3 font-semibold text-right">Earnings</th>
+                                </tr>
+                                <tr className="border-b text-left">
+                                  <th className="pb-2"></th>
+                                  <th className="pb-2"></th>
+                                  <th className="pb-2"></th>
+                                  <th className="pb-2"></th>
+                                  <th className="pb-2 font-normal text-xs text-gray-500 text-center">To Par</th>
+                                  <th className="pb-2 font-normal text-xs text-gray-500 text-center">Total</th>
+                                  <th className="pb-2"></th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -363,8 +372,17 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                     <td className={`py-3 text-center ${getPositionStyle(result.position)}`}>
                                       {result.position}
                                     </td>
-                                    <td className="py-3 text-gray-600">{result.score}</td>
-                                    <td className="py-3 text-gray-600">{result.overall}</td>
+                                    <td className="py-3 text-center">
+                                      {result.scores && result.scores.length > 0 ? (
+                                        <span className="text-blue-600 hover:underline cursor-pointer">
+                                          {result.scores.join("-")}
+                                        </span>
+                                      ) : (
+                                        <span className="text-gray-400">-</span>
+                                      )}
+                                    </td>
+                                    <td className="py-3 text-center text-gray-600">{result.score}</td>
+                                    <td className="py-3 text-center text-gray-600">{result.overall}</td>
                                     <td className="py-3 text-right font-medium">
                                       {formatEarnings(result.earnings || 0)}
                                     </td>
@@ -373,7 +391,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                               </tbody>
                               <tfoot>
                                 <tr className="border-t-2">
-                                  <td colSpan={5} className="pt-3 text-right font-semibold">
+                                  <td colSpan={6} className="pt-3 text-right font-semibold">
                                     {selectedYear === "all" ? "Career" : selectedYear} Earnings:
                                   </td>
                                   <td className="pt-3 text-right font-bold text-green-600">
@@ -384,7 +402,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                 </tr>
                                 {selectedYear === "all" && (
                                   <tr>
-                                    <td colSpan={6} className="pt-2 text-sm text-gray-500">
+                                    <td colSpan={7} className="pt-2 text-sm text-gray-500">
                                       <div className="flex justify-between">
                                         <span>Wins: {filteredResults.filter(r => r.position === "1").length}</span>
                                         <span>Top 10s: {filteredResults.filter(r => {

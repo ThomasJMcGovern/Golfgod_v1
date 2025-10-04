@@ -217,7 +217,7 @@ export default function YearTournamentsPage() {
   };
 
   const PlayerLink = ({ name }: { name?: string }) => {
-    if (!name) return <span className="text-gray-500">TBD</span>;
+    if (!name) return null;
 
     const playerId = findPlayerId(name);
     const flag = getCountryFlag(name);

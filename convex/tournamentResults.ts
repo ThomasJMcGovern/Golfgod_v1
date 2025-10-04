@@ -360,3 +360,71 @@ export const deleteAllTournamentResults = mutation({
     return { deleted: results.length };
   },
 });
+
+// Delete one batch of tournament data (progressive deletion to stay under 4,096 read limit)
+export const clearTournamentDataBatch = mutation({
+  handler: async (ctx) => {
+    const BATCH_SIZE = 50; // Conservative batch size to stay under 4,096 read limit
+
+    // Try tournament results first
+    const results = await ctx.db.query("tournamentResults").take(BATCH_SIZE);
+    if (results.length > 0) {
+      for (const result of results) {
+        await ctx.db.delete(result._id);
+      }
+      return {
+        table: "tournamentResults",
+        deleted: results.length,
+        hasMore: true,
+      };
+    }
+
+    // Then round stats
+    const roundStats = await ctx.db.query("roundStats").take(BATCH_SIZE);
+    if (roundStats.length > 0) {
+      for (const stat of roundStats) {
+        await ctx.db.delete(stat._id);
+      }
+      return {
+        table: "roundStats",
+        deleted: roundStats.length,
+        hasMore: true,
+      };
+    }
+
+    // Finally player course stats
+    const playerStats = await ctx.db.query("playerCourseStats").take(BATCH_SIZE);
+    if (playerStats.length > 0) {
+      for (const stat of playerStats) {
+        await ctx.db.delete(stat._id);
+      }
+      return {
+        table: "playerCourseStats",
+        deleted: playerStats.length,
+        hasMore: true,
+      };
+    }
+
+    // All tables empty
+    return {
+      table: "complete",
+      deleted: 0,
+      hasMore: false,
+    };
+  },
+});
+
+// Get counts for progress tracking
+export const getTournamentDataCounts = query({
+  handler: async (ctx) => {
+    const results = await ctx.db.query("tournamentResults").take(100);
+    const roundStats = await ctx.db.query("roundStats").take(100);
+    const playerStats = await ctx.db.query("playerCourseStats").take(100);
+
+    return {
+      hasResults: results.length > 0,
+      hasRoundStats: roundStats.length > 0,
+      hasPlayerStats: playerStats.length > 0,
+    };
+  },
+});

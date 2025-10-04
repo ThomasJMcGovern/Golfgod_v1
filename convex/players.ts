@@ -29,6 +29,17 @@ export const getAllPlayers = query({
   },
 });
 
+// Simplified getAll function for components that don't need search
+export const getAll = query({
+  handler: async (ctx) => {
+    const players = await ctx.db
+      .query("players")
+      .withIndex("by_name")
+      .collect();
+    return players;
+  },
+});
+
 // Get all player names and IDs for linking (optimized for tournament page)
 export const getAllPlayerNamesAndIds = query({
   handler: async (ctx) => {
@@ -244,5 +255,66 @@ export const cleanupPlayerData = mutation({
     }
 
     return { playersUpdated: updated };
+  },
+});
+
+// Find players with incomplete data (likely orphans from old imports)
+export const findOrphanPlayers = query({
+  handler: async (ctx) => {
+    const allPlayers = await ctx.db.query("players").collect();
+
+    // Get tournament result counts for each player
+    const playersWithData = await Promise.all(
+      allPlayers.map(async (player) => {
+        const resultCount = (await ctx.db
+          .query("tournamentResults")
+          .withIndex("by_player", (q) => q.eq("playerId", player._id))
+          .collect()).length;
+
+        return {
+          _id: player._id,
+          name: player.name,
+          espnId: player.espnId,
+          country: player.country,
+          countryCode: player.countryCode,
+          birthDate: player.birthDate,
+          tournamentResults: resultCount,
+          isOrphan: !player.espnId || player.country === "Unknown" || resultCount === 0,
+        };
+      })
+    );
+
+    // Sort orphans first, then by name
+    return playersWithData.sort((a, b) => {
+      if (a.isOrphan !== b.isOrphan) return a.isOrphan ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  },
+});
+
+// Delete orphan players (those with no tournament results)
+export const deleteOrphanPlayers = mutation({
+  handler: async (ctx) => {
+    const allPlayers = await ctx.db.query("players").collect();
+    let deleted = 0;
+
+    for (const player of allPlayers) {
+      // Check if player has any tournament results
+      const resultCount = (await ctx.db
+        .query("tournamentResults")
+        .withIndex("by_player", (q) => q.eq("playerId", player._id))
+        .collect()).length;
+
+      // Delete if no results and either no espnId or country is "Unknown"
+      if (resultCount === 0 && (!player.espnId || player.country === "Unknown")) {
+        await ctx.db.delete(player._id);
+        deleted++;
+      }
+    }
+
+    return {
+      deleted,
+      message: `Deleted ${deleted} orphan players with no tournament results`,
+    };
   },
 });

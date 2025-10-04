@@ -103,4 +103,113 @@ export default defineSchema({
     .index("by_tournament_id", ["tournament_id"])
     .index("by_year_and_name", ["year", "name"])
     .index("by_status", ["status"]),
+
+  // Golf Courses table
+  courses: defineTable({
+    name: v.string(),                        // Course name (e.g., "TPC Sawgrass")
+    location: v.string(),                    // City, State/Country
+    par: v.number(),                         // Course par (e.g., 72)
+    yardage: v.optional(v.number()),        // Total yardage
+    established: v.optional(v.number()),     // Year established
+    designer: v.optional(v.string()),        // Course designer
+    type: v.optional(v.string()),           // Course type (links, parkland, etc.)
+    grassType: v.optional(v.string()),      // Grass type (bentgrass, bermuda, etc.)
+    stimpmeter: v.optional(v.number()),     // Green speed average
+  })
+    .index("by_name", ["name"]),
+
+  // Tournament-Course mapping table
+  tournamentCourses: defineTable({
+    tournamentName: v.string(),             // Tournament name (consistent across years)
+    courseId: v.id("courses"),              // Reference to courses table
+    yearStart: v.number(),                  // First year at this course
+    yearEnd: v.optional(v.number()),        // Last year at this course (null = current)
+    isPrimary: v.boolean(),                 // Primary course for rotation tournaments
+  })
+    .index("by_tournament", ["tournamentName"])
+    .index("by_course", ["courseId"])
+    .index("by_tournament_year", ["tournamentName", "yearStart"]),
+
+  // Player Course Statistics (aggregated/cached data)
+  playerCourseStats: defineTable({
+    playerId: v.id("players"),
+    courseId: v.id("courses"),
+    // Basic stats
+    roundsPlayed: v.number(),
+    scoringAverage: v.number(),
+    bestScore: v.number(),
+    worstScore: v.number(),
+    cutsPlayed: v.number(),
+    cutsMade: v.number(),
+    wins: v.number(),
+    top10s: v.number(),
+    top25s: v.number(),
+    totalEarnings: v.number(),
+    // Scoring breakdown
+    avgR1Score: v.optional(v.number()),
+    avgR2Score: v.optional(v.number()),
+    avgR3Score: v.optional(v.number()),
+    avgR4Score: v.optional(v.number()),
+    avgEarlyScore: v.optional(v.number()),    // R1+R2 average
+    avgWeekendScore: v.optional(v.number()),  // R3+R4 average
+    // Advanced stats (when available)
+    avgDrivingDistance: v.optional(v.number()),
+    avgDrivingAccuracy: v.optional(v.number()),
+    avgGIR: v.optional(v.number()),           // Greens in Regulation
+    avgPuttsPerRound: v.optional(v.number()),
+    avgScrambling: v.optional(v.number()),
+    avgSandSaves: v.optional(v.number()),
+    // Strokes Gained (when available)
+    avgSgTotal: v.optional(v.number()),
+    avgSgOtt: v.optional(v.number()),         // Off the tee
+    avgSgApp: v.optional(v.number()),         // Approach
+    avgSgArg: v.optional(v.number()),         // Around the green
+    avgSgPutt: v.optional(v.number()),        // Putting
+    // Metadata
+    lastUpdated: v.number(),                  // Timestamp of last calculation
+    lastTournamentYear: v.number(),           // Most recent tournament year
+  })
+    .index("by_player", ["playerId"])
+    .index("by_course", ["courseId"])
+    .index("by_player_course", ["playerId", "courseId"]),
+
+  // Detailed Round Statistics (for future detailed imports)
+  roundStats: defineTable({
+    playerId: v.id("players"),
+    courseId: v.id("courses"),
+    tournamentResultId: v.id("tournamentResults"),
+    year: v.number(),
+    round: v.number(),                        // 1, 2, 3, or 4
+    score: v.number(),
+    toPar: v.number(),
+    teeTime: v.optional(v.string()),         // "AM" or "PM"
+    // Detailed stats (when available)
+    fairwaysHit: v.optional(v.number()),
+    fairwaysPossible: v.optional(v.number()),
+    greensHit: v.optional(v.number()),
+    greensPossible: v.optional(v.number()),
+    putts: v.optional(v.number()),
+    scrambling: v.optional(v.string()),      // e.g., "3/5"
+    sandSaves: v.optional(v.string()),       // e.g., "2/3"
+    birdies: v.optional(v.number()),
+    pars: v.optional(v.number()),
+    bogeys: v.optional(v.number()),
+    doubleBogeys: v.optional(v.number()),
+    eagles: v.optional(v.number()),
+    // Strokes Gained (when available)
+    sgTotal: v.optional(v.number()),
+    sgOtt: v.optional(v.number()),
+    sgApp: v.optional(v.number()),
+    sgArg: v.optional(v.number()),
+    sgPutt: v.optional(v.number()),
+    // Weather conditions
+    windSpeed: v.optional(v.number()),
+    temperature: v.optional(v.number()),
+    conditions: v.optional(v.string()),      // "Sunny", "Rainy", etc.
+  })
+    .index("by_player", ["playerId"])
+    .index("by_course", ["courseId"])
+    .index("by_tournament_result", ["tournamentResultId"])
+    .index("by_player_course", ["playerId", "courseId"])
+    .index("by_year", ["year"]),
 });

@@ -14,10 +14,13 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as courseStats from "../courseStats.js";
 import type * as dataManagement from "../dataManagement.js";
+import type * as dataProcessing from "../dataProcessing.js";
 import type * as dev_debug from "../dev/debug.js";
 import type * as dev_seed from "../dev/seed.js";
 import type * as http from "../http.js";
+import type * as importMasterData from "../importMasterData.js";
 import type * as importPipeline from "../importPipeline.js";
 import type * as imports from "../imports.js";
 import type * as playerBios from "../playerBios.js";
@@ -36,10 +39,13 @@ import type * as tournaments from "../tournaments.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  courseStats: typeof courseStats;
   dataManagement: typeof dataManagement;
+  dataProcessing: typeof dataProcessing;
   "dev/debug": typeof dev_debug;
   "dev/seed": typeof dev_seed;
   http: typeof http;
+  importMasterData: typeof importMasterData;
   importPipeline: typeof importPipeline;
   imports: typeof imports;
   playerBios: typeof playerBios;

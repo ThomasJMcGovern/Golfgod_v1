@@ -117,10 +117,13 @@ export default function Dashboard() {
           </Card>
 
           {/* Inside the Ropes */}
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow relative">
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow relative"
+            onClick={() => router.push("/inside-the-ropes")}
+          >
             <div className="absolute top-4 right-4">
-              <Badge variant="secondary" className="bg-amber-100 text-amber-700 hover:bg-amber-100">
-                COMING SOON
+              <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                NEW
               </Badge>
             </div>
             <CardHeader>
@@ -129,9 +132,15 @@ export default function Dashboard() {
               </div>
               <CardTitle>Inside the Ropes</CardTitle>
               <CardDescription>
-                Expert analysis, course insights, and betting strategies
+                Course-specific player stats and betting insights
               </CardDescription>
             </CardHeader>
+            <CardContent>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <BarChart3 className="w-4 h-4 mr-1" />
+                Per-Course Analytics
+              </div>
+            </CardContent>
           </Card>
         </div>
 
