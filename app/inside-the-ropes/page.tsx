@@ -1,17 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, TrendingUp, TrendingDown, Target, Wind, Calendar, DollarSign, Award } from "lucide-react";
+import SearchableSelect from "@/components/ui/searchable-select";
+import { Trophy, TrendingUp, TrendingDown, Target, Wind, Calendar, DollarSign, Award, ChevronLeft } from "lucide-react";
 
 export default function InsideTheRopes() {
+  const router = useRouter();
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
@@ -74,57 +76,108 @@ export default function InsideTheRopes() {
     }).format(value);
   };
 
+  // Helper function to get flag emoji from country code
+  const getFlagEmoji = (countryCode: string): string => {
+    // Handle special cases for UK subdivisions - use UK flag for all
+    if (countryCode === "GB-ENG" || countryCode === "GB-SCT" ||
+        countryCode === "GB-NIR" || countryCode === "GB-WLS") {
+      return "🇬🇧"; // UK flag for all British subdivisions
+    }
+
+    // Handle invalid or empty country codes
+    if (!countryCode || countryCode.length !== 2) {
+      return "🏳️"; // Default flag
+    }
+
+    try {
+      // Convert country code to flag emoji
+      const codePoints = countryCode
+        .toUpperCase()
+        .split("")
+        .map((char) => 127397 + char.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
+    } catch {
+      return "🏳️"; // Default flag on error
+    }
+  };
+
+  // Format courses for SearchableSelect
+  const courseOptions = courses?.map((course) => ({
+    value: course._id,
+    label: course.name,
+    subtitle: course.location,
+  })) || [];
+
+  // Format players for SearchableSelect
+  const playerOptions = players?.map((player) => ({
+    value: player._id,
+    label: player.name,
+    subtitle: player.country,
+    flag: player.countryCode ? getFlagEmoji(player.countryCode) : undefined,
+  })) || [];
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Inside the Ropes</h1>
-        <p className="text-muted-foreground">
-          Deep dive into course-specific player performance and betting insights
-        </p>
-      </div>
-
-      {/* Course and Player Selection */}
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
-        <div>
-          <label className="text-sm font-medium mb-2 block">Select Course</label>
-          <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a course..." />
-            </SelectTrigger>
-            <SelectContent>
-              {courses?.length === 0 && (
-                <div className="p-4 text-center">
-                  <p className="text-sm text-muted-foreground mb-2">No courses available</p>
-                  <Button size="sm" onClick={handleSeedCourses}>
-                    Seed Popular Courses
-                  </Button>
-                </div>
-              )}
-              {courses?.map((course) => (
-                <SelectItem key={course._id} value={course._id}>
-                  {course.name} - {course.location}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+      {/* Header with Back Button */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push("/")}
+                className="mr-3"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <h1 className="text-xl font-semibold">Inside the Ropes</h1>
+                <p className="text-sm text-gray-500">
+                  Course-specific player performance and betting insights
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+      </header>
 
-        <div>
-          <label className="text-sm font-medium mb-2 block">Select Player</label>
-          <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a player..." />
-            </SelectTrigger>
-            <SelectContent>
-              {players?.map((player) => (
-                <SelectItem key={player._id} value={player._id}>
-                  {player.name} ({player.country})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Course and Player Selection */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Select Course</label>
+            {courses?.length === 0 ? (
+              <div className="p-4 text-center border rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">No courses available</p>
+                <Button size="sm" onClick={handleSeedCourses}>
+                  Seed Popular Courses
+                </Button>
+              </div>
+            ) : (
+              <SearchableSelect
+                value={selectedCourse}
+                onChange={setSelectedCourse}
+                options={courseOptions}
+                placeholder="Search for a course..."
+                isLoading={!courses}
+              />
+            )}
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Select Player</label>
+            <SearchableSelect
+              value={selectedPlayer}
+              onChange={setSelectedPlayer}
+              options={playerOptions}
+              placeholder="Search for a player..."
+              isLoading={!players}
+              showFlags={true}
+            />
+          </div>
         </div>
-      </div>
 
       {/* Player Course Statistics */}
       {playerStats && (
@@ -525,6 +578,7 @@ export default function InsideTheRopes() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }
