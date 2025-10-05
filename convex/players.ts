@@ -2,12 +2,15 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
-// Get all players for dropdown selection
+// Get all players for dropdown selection (PAGINATED)
 export const getAllPlayers = query({
   args: {
     search: v.optional(v.string()),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
+
     if (args.search) {
       // Use search index for text search
       const results = await ctx.db
@@ -15,38 +18,48 @@ export const getAllPlayers = query({
         .withSearchIndex("search_name", (q) =>
           q.search("name", args.search!)
         )
-        .take(50);
+        .take(limit);
       return results;
     }
 
-    // Return all players sorted by name
+    // Return paginated players sorted by name
     const players = await ctx.db
       .query("players")
       .withIndex("by_name")
-      .collect();
+      .take(limit);
 
     return players;
   },
 });
 
-// Simplified getAll function for components that don't need search
+// Simplified getAll function for components that don't need search (PAGINATED)
 export const getAll = query({
-  handler: async (ctx) => {
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
+
     const players = await ctx.db
       .query("players")
       .withIndex("by_name")
-      .collect();
+      .take(limit);
     return players;
   },
 });
 
-// Get all player names and IDs for linking (optimized for tournament page)
+// Get all player names and IDs for linking (PAGINATED)
 export const getAllPlayerNamesAndIds = query({
-  handler: async (ctx) => {
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 1000); // Default 200, max 1000
+
     const players = await ctx.db
       .query("players")
       .withIndex("by_name")
-      .collect();
+      .take(limit);
 
     return players.map(player => ({
       _id: player._id,
@@ -258,18 +271,23 @@ export const cleanupPlayerData = mutation({
   },
 });
 
-// Find players with incomplete data (likely orphans from old imports)
+// Find players with incomplete data (OPTIMIZED - Paginated)
 export const findOrphanPlayers = query({
-  handler: async (ctx) => {
-    const allPlayers = await ctx.db.query("players").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
+    const allPlayers = await ctx.db.query("players").take(limit);
 
     // Get tournament result counts for each player
     const playersWithData = await Promise.all(
       allPlayers.map(async (player) => {
-        const resultCount = (await ctx.db
+        // Just check if player has ANY results (don't count all)
+        const hasResults = await ctx.db
           .query("tournamentResults")
           .withIndex("by_player", (q) => q.eq("playerId", player._id))
-          .collect()).length;
+          .first();
 
         return {
           _id: player._id,
@@ -278,8 +296,8 @@ export const findOrphanPlayers = query({
           country: player.country,
           countryCode: player.countryCode,
           birthDate: player.birthDate,
-          tournamentResults: resultCount,
-          isOrphan: !player.espnId || player.country === "Unknown" || resultCount === 0,
+          hasResults: !!hasResults,
+          isOrphan: !player.espnId || player.country === "Unknown" || !hasResults,
         };
       })
     );
@@ -292,21 +310,25 @@ export const findOrphanPlayers = query({
   },
 });
 
-// Delete orphan players (those with no tournament results)
+// Delete orphan players (OPTIMIZED - Batched)
 export const deleteOrphanPlayers = mutation({
-  handler: async (ctx) => {
-    const allPlayers = await ctx.db.query("players").collect();
+  args: {
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 50, 100);
+    const allPlayers = await ctx.db.query("players").take(batchSize);
     let deleted = 0;
 
     for (const player of allPlayers) {
-      // Check if player has any tournament results
-      const resultCount = (await ctx.db
+      // Check if player has any tournament results (just check first one)
+      const hasResults = await ctx.db
         .query("tournamentResults")
         .withIndex("by_player", (q) => q.eq("playerId", player._id))
-        .collect()).length;
+        .first();
 
       // Delete if no results and either no espnId or country is "Unknown"
-      if (resultCount === 0 && (!player.espnId || player.country === "Unknown")) {
+      if (!hasResults && (!player.espnId || player.country === "Unknown")) {
         await ctx.db.delete(player._id);
         deleted++;
       }
@@ -314,7 +336,8 @@ export const deleteOrphanPlayers = mutation({
 
     return {
       deleted,
-      message: `Deleted ${deleted} orphan players with no tournament results`,
+      message: `Deleted ${deleted} orphan players (processed ${batchSize} players)`,
+      hasMore: allPlayers.length === batchSize,
     };
   },
 });

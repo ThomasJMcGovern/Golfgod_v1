@@ -279,18 +279,21 @@ export const importTournamentResults = mutation({
   },
 });
 
-// Get tournament results for a player
+// Get tournament results for a player (PAGINATED)
 export const getPlayerTournamentResults = query({
   args: {
     playerId: v.id("players"),
     year: v.optional(v.number()),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
+
     let query = ctx.db
       .query("tournamentResults")
       .withIndex("by_player", (q) => q.eq("playerId", args.playerId));
 
-    const results = await query.collect();
+    const results = await query.take(limit);
 
     // Filter by year if provided
     const filtered = args.year
@@ -307,26 +310,33 @@ export const getPlayerTournamentResults = query({
   },
 });
 
-// Get all unique tournaments
+// Get all unique tournaments (PAGINATED)
 export const getAllTournaments = query({
-  handler: async (ctx) => {
-    const results = await ctx.db.query("tournamentResults").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 500, 1000); // Default 500, max 1000
+    const results = await ctx.db.query("tournamentResults").take(limit);
     const tournaments = [...new Set(results.map((r) => r.tournament))];
     return tournaments.sort();
   },
 });
 
-// Get results for a specific tournament
+// Get results for a specific tournament (PAGINATED)
 export const getTournamentResults = query({
   args: {
     tournament: v.string(),
     year: v.optional(v.number()),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
+
     const results = await ctx.db
       .query("tournamentResults")
       .withIndex("by_tournament", (q) => q.eq("tournament", args.tournament))
-      .collect();
+      .take(limit);
 
     // Filter by year if provided
     const filtered = args.year
@@ -350,21 +360,40 @@ export const getTournamentResults = query({
   },
 });
 
-// Delete all tournament results (for admin use)
+// Delete all tournament results (for admin use) - BATCHED
 export const deleteAllTournamentResults = mutation({
-  handler: async (ctx) => {
-    const results = await ctx.db.query("tournamentResults").collect();
-    for (const result of results) {
-      await ctx.db.delete(result._id);
+  args: {
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 50, 100);
+    let deleted = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const results = await ctx.db.query("tournamentResults").take(batchSize);
+
+      if (results.length === 0) {
+        hasMore = false;
+      } else {
+        for (const result of results) {
+          await ctx.db.delete(result._id);
+          deleted++;
+        }
+      }
     }
-    return { deleted: results.length };
+
+    return { deleted, message: `Deleted ${deleted} tournament results` };
   },
 });
 
 // Delete one batch of tournament data (progressive deletion to stay under 4,096 read limit)
+// NOTE: This function uses small batches to minimize write conflicts.
+// Convex will automatically retry on conflicts (optimistic concurrency control).
+// If you see "Retried due to write conflicts" warnings, this is expected behavior.
 export const clearTournamentDataBatch = mutation({
   handler: async (ctx) => {
-    const BATCH_SIZE = 50; // Conservative batch size to stay under 4,096 read limit
+    const BATCH_SIZE = 25; // Small batch size to minimize write conflicts and stay under limits
 
     // Try tournament results first
     const results = await ctx.db.query("tournamentResults").take(BATCH_SIZE);
@@ -379,7 +408,7 @@ export const clearTournamentDataBatch = mutation({
       };
     }
 
-    // Then round stats
+    // Then round stats (most prone to write conflicts)
     const roundStats = await ctx.db.query("roundStats").take(BATCH_SIZE);
     if (roundStats.length > 0) {
       for (const stat of roundStats) {

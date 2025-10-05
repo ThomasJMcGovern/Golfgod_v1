@@ -62,29 +62,46 @@ export const importTournamentsBatch = mutation({
   },
 });
 
-// Clear all tournament data (for fresh import)
+// Clear all tournament data (for fresh import) - BATCHED
 export const clearTournaments = mutation({
-  handler: async (ctx) => {
-    const tournaments = await ctx.db.query("pgaTournaments").collect();
+  args: {
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 50, 100);
     let deleted = 0;
+    let hasMore = true;
 
-    for (const tournament of tournaments) {
-      await ctx.db.delete(tournament._id);
-      deleted++;
+    while (hasMore) {
+      const tournaments = await ctx.db.query("pgaTournaments").take(batchSize);
+
+      if (tournaments.length === 0) {
+        hasMore = false;
+      } else {
+        for (const tournament of tournaments) {
+          await ctx.db.delete(tournament._id);
+          deleted++;
+        }
+      }
     }
 
-    return { deleted };
+    return { deleted, message: `Deleted ${deleted} tournaments` };
   },
 });
 
-// Get tournaments by year
+// Get tournaments by year (PAGINATED)
 export const getTournamentsByYear = query({
-  args: { year: v.number() },
+  args: {
+    year: v.number(),
+    limit: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 200); // Default 100, max 200
+
     const tournaments = await ctx.db
       .query("pgaTournaments")
       .withIndex("by_year", q => q.eq("year", args.year))
-      .collect();
+      .take(limit);
 
     // Sort by date (assuming format like "Jan 4" or "Oct 23")
     const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -107,35 +124,45 @@ export const getTournamentsByYear = query({
   },
 });
 
-// Get all tournaments won by a specific player
+// Get all tournaments won by a specific player (PAGINATED)
 export const getTournamentsByWinner = query({
-  args: { winner_espn_id: v.number() },
+  args: {
+    winner_espn_id: v.number(),
+    limit: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 50, 100); // Default 50, max 100
+
     const tournaments = await ctx.db
       .query("pgaTournaments")
       .withIndex("by_winner", q => q.eq("winner_espn_id", args.winner_espn_id))
-      .collect();
+      .take(limit);
 
     return tournaments.sort((a, b) => b.year - a.year);
   },
 });
 
-// Get recent tournaments (last 10 completed)
+// Get recent tournaments (PAGINATED)
 export const getRecentTournaments = query({
-  handler: async (ctx) => {
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 10, 50); // Default 10, max 50
+
     const tournaments = await ctx.db
       .query("pgaTournaments")
       .withIndex("by_status", q => q.eq("status", "completed"))
-      .collect();
+      .take(limit * 2); // Take 2x to ensure we get enough after sorting
 
-    // Sort by year and approximate date, get last 10
+    // Sort by year and approximate date, get requested limit
     return tournaments
       .sort((a, b) => {
         if (a.year !== b.year) return b.year - a.year;
         // Rough date comparison
         return (b.start_date || "").localeCompare(a.start_date || "");
       })
-      .slice(0, 10);
+      .slice(0, limit);
   },
 });
 
@@ -150,19 +177,23 @@ export const getTournamentById = query({
   },
 });
 
-// Get tournament statistics by year
+// Get tournament statistics by year (PAGINATED)
 export const getTournamentStats = query({
-  args: { year: v.optional(v.number()) },
+  args: {
+    year: v.optional(v.number()),
+    limit: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
     let tournaments;
 
     if (args.year !== undefined) {
       tournaments = await ctx.db
         .query("pgaTournaments")
         .withIndex("by_year", q => q.eq("year", args.year!))
-        .collect();
+        .take(limit);
     } else {
-      tournaments = await ctx.db.query("pgaTournaments").collect();
+      tournaments = await ctx.db.query("pgaTournaments").take(limit);
     }
 
     const stats = {
@@ -177,19 +208,27 @@ export const getTournamentStats = query({
   },
 });
 
-// Get all years with tournament data
+// Get all years with tournament data (PAGINATED)
 export const getAvailableYears = query({
-  handler: async (ctx) => {
-    const tournaments = await ctx.db.query("pgaTournaments").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
+    const tournaments = await ctx.db.query("pgaTournaments").take(limit);
     const years = [...new Set(tournaments.map(t => t.year))].sort((a, b) => b - a);
     return years;
   },
 });
 
-// Get year summary for all years
+// Get year summary for all years (PAGINATED)
 export const getYearSummaries = query({
-  handler: async (ctx) => {
-    const tournaments = await ctx.db.query("pgaTournaments").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
+    const tournaments = await ctx.db.query("pgaTournaments").take(limit);
 
     const summaryMap = new Map<number, any>();
 
@@ -228,11 +267,15 @@ export const getYearSummaries = query({
   },
 });
 
-// Search tournaments by name
+// Search tournaments by name (PAGINATED)
 export const searchTournaments = query({
-  args: { searchTerm: v.string() },
+  args: {
+    searchTerm: v.string(),
+    limit: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
-    const allTournaments = await ctx.db.query("pgaTournaments").collect();
+    const limit = Math.min(args.limit || 100, 200); // Default 100, max 200
+    const allTournaments = await ctx.db.query("pgaTournaments").take(limit * 2); // Take 2x for filtering
 
     const searchLower = args.searchTerm.toLowerCase();
     const filtered = allTournaments.filter(t =>
@@ -240,17 +283,21 @@ export const searchTournaments = query({
       t.winner_name?.toLowerCase().includes(searchLower)
     );
 
-    return filtered.sort((a, b) => b.year - a.year);
+    return filtered.sort((a, b) => b.year - a.year).slice(0, limit);
   },
 });
 
-// Fix 2026 tournament data by converting winner to previous_winner and updating status
+// Fix 2026 tournament data by converting winner to previous_winner and updating status (BATCHED)
 export const fix2026TournamentData = mutation({
-  handler: async (ctx) => {
+  args: {
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 100, 200); // Default 100, max 200
     const tournaments2026 = await ctx.db
       .query("pgaTournaments")
       .withIndex("by_year", q => q.eq("year", 2026))
-      .collect();
+      .take(batchSize);
 
     let updated = 0;
     const errors: string[] = [];

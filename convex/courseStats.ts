@@ -1,10 +1,14 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-// Get all courses
+// Get all courses (PAGINATED)
 export const getAllCourses = query({
-  handler: async (ctx) => {
-    return await ctx.db.query("courses").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
+    return await ctx.db.query("courses").take(limit);
   },
 });
 
@@ -21,16 +25,19 @@ export const getCourseByName = query({
   },
 });
 
-// Get tournaments played at a specific course
+// Get tournaments played at a specific course (PAGINATED)
 export const getTournamentsAtCourse = query({
   args: {
     courseId: v.id("courses"),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 50, 200); // Default 50, max 200
+
     const mappings = await ctx.db
       .query("tournamentCourses")
       .withIndex("by_course", (q) => q.eq("courseId", args.courseId))
-      .collect();
+      .take(limit);
 
     return mappings;
   },
@@ -110,16 +117,19 @@ export const getPlayerTournamentHistoryAtCourse = query({
   },
 });
 
-// Get all player stats for a specific course
+// Get all player stats for a specific course (PAGINATED)
 export const getAllPlayersAtCourse = query({
   args: {
     courseId: v.id("courses"),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 50, 200); // Default 50, max 200
+
     const stats = await ctx.db
       .query("playerCourseStats")
       .withIndex("by_course", (q) => q.eq("courseId", args.courseId))
-      .collect();
+      .take(limit);
 
     // Join with player data
     const playersWithStats = await Promise.all(

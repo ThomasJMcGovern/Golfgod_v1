@@ -124,12 +124,14 @@ export const clearTournamentResults = mutation({
   },
 });
 
-// Clear player data with cascade
+// Clear player data with cascade (BATCHED)
 export const clearPlayersWithCascade = mutation({
   args: {
     preserveAuth: v.optional(v.boolean()), // Keep user accounts
+    batchSize: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 50, 100);
     const results = {
       players: 0,
       playerStats: 0,
@@ -137,49 +139,70 @@ export const clearPlayersWithCascade = mutation({
       userFollows: 0,
     };
 
-    // First, get all player IDs
-    const players = await ctx.db.query("players").collect();
+    // First, get batch of player IDs
+    const players = await ctx.db.query("players").take(batchSize);
     const playerIds = players.map((p) => p._id);
 
     // Delete related data first (to maintain referential integrity)
 
     // Delete tournament results
     for (const playerId of playerIds) {
-      const tournamentResults = await ctx.db
-        .query("tournamentResults")
-        .withIndex("by_player", (q) => q.eq("playerId", playerId))
-        .collect();
+      let hasMore = true;
+      while (hasMore) {
+        const tournamentResults = await ctx.db
+          .query("tournamentResults")
+          .withIndex("by_player", (q) => q.eq("playerId", playerId))
+          .take(BATCH_SIZE);
 
-      for (const result of tournamentResults) {
-        await ctx.db.delete(result._id);
-        results.tournamentResults++;
+        if (tournamentResults.length === 0) {
+          hasMore = false;
+        } else {
+          for (const result of tournamentResults) {
+            await ctx.db.delete(result._id);
+            results.tournamentResults++;
+          }
+        }
       }
     }
 
     // Delete player stats
     for (const playerId of playerIds) {
-      const stats = await ctx.db
-        .query("playerStats")
-        .filter((q) => q.eq(q.field("playerId"), playerId))
-        .collect();
+      let hasMore = true;
+      while (hasMore) {
+        const stats = await ctx.db
+          .query("playerStats")
+          .filter((q) => q.eq(q.field("playerId"), playerId))
+          .take(BATCH_SIZE);
 
-      for (const stat of stats) {
-        await ctx.db.delete(stat._id);
-        results.playerStats++;
+        if (stats.length === 0) {
+          hasMore = false;
+        } else {
+          for (const stat of stats) {
+            await ctx.db.delete(stat._id);
+            results.playerStats++;
+          }
+        }
       }
     }
 
     // Delete user follows (unless preserving auth)
     if (!args.preserveAuth) {
       for (const playerId of playerIds) {
-        const follows = await ctx.db
-          .query("userFollows")
-          .filter((q) => q.eq(q.field("playerId"), playerId))
-          .collect();
+        let hasMore = true;
+        while (hasMore) {
+          const follows = await ctx.db
+            .query("userFollows")
+            .filter((q) => q.eq(q.field("playerId"), playerId))
+            .take(BATCH_SIZE);
 
-        for (const follow of follows) {
-          await ctx.db.delete(follow._id);
-          results.userFollows++;
+          if (follows.length === 0) {
+            hasMore = false;
+          } else {
+            for (const follow of follows) {
+              await ctx.db.delete(follow._id);
+              results.userFollows++;
+            }
+          }
         }
       }
     }
@@ -193,14 +216,19 @@ export const clearPlayersWithCascade = mutation({
     return {
       success: true,
       deleted: results,
+      hasMore: players.length === batchSize,
       message: `Cascade deleted: ${results.players} players, ${results.playerStats} stats, ${results.tournamentResults} results, ${results.userFollows} follows`,
     };
   },
 });
 
-// Validate database integrity
+// Validate database integrity (PAGINATED)
 export const validateDatabase = query({
-  handler: async (ctx) => {
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
     const validation = {
       players: {
         total: 0,
@@ -228,7 +256,7 @@ export const validateDatabase = query({
     };
 
     // Check players
-    const players = await ctx.db.query("players").collect();
+    const players = await ctx.db.query("players").take(limit);
     validation.players.total = players.length;
 
     // Check for world rankings
@@ -264,7 +292,7 @@ export const validateDatabase = query({
     }
 
     // Check player stats
-    const stats = await ctx.db.query("playerStats").collect();
+    const stats = await ctx.db.query("playerStats").take(limit);
     validation.playerStats.total = stats.length;
 
     // Check for orphaned stats
@@ -330,9 +358,13 @@ export const validateDatabase = query({
   },
 });
 
-// Clean up orphaned records
+// Clean up orphaned records (BATCHED)
 export const cleanupOrphans = mutation({
-  handler: async (ctx) => {
+  args: {
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = Math.min(args.batchSize || 50, 100);
     const cleaned = {
       tournamentResults: 0,
       playerStats: 0,
@@ -340,32 +372,53 @@ export const cleanupOrphans = mutation({
     };
 
     // Clean orphaned tournament results
-    const results = await ctx.db.query("tournamentResults").collect();
-    for (const result of results) {
-      const player = await ctx.db.get(result.playerId);
-      if (!player) {
-        await ctx.db.delete(result._id);
-        cleaned.tournamentResults++;
+    let hasMore = true;
+    while (hasMore) {
+      const results = await ctx.db.query("tournamentResults").take(batchSize);
+      if (results.length === 0) {
+        hasMore = false;
+      } else {
+        for (const result of results) {
+          const player = await ctx.db.get(result.playerId);
+          if (!player) {
+            await ctx.db.delete(result._id);
+            cleaned.tournamentResults++;
+          }
+        }
       }
     }
 
     // Clean orphaned player stats
-    const stats = await ctx.db.query("playerStats").collect();
-    for (const stat of stats) {
-      const player = await ctx.db.get(stat.playerId);
-      if (!player) {
-        await ctx.db.delete(stat._id);
-        cleaned.playerStats++;
+    hasMore = true;
+    while (hasMore) {
+      const stats = await ctx.db.query("playerStats").take(batchSize);
+      if (stats.length === 0) {
+        hasMore = false;
+      } else {
+        for (const stat of stats) {
+          const player = await ctx.db.get(stat.playerId);
+          if (!player) {
+            await ctx.db.delete(stat._id);
+            cleaned.playerStats++;
+          }
+        }
       }
     }
 
     // Clean orphaned user follows
-    const follows = await ctx.db.query("userFollows").collect();
-    for (const follow of follows) {
-      const player = await ctx.db.get(follow.playerId);
-      if (!player) {
-        await ctx.db.delete(follow._id);
-        cleaned.userFollows++;
+    hasMore = true;
+    while (hasMore) {
+      const follows = await ctx.db.query("userFollows").take(batchSize);
+      if (follows.length === 0) {
+        hasMore = false;
+      } else {
+        for (const follow of follows) {
+          const player = await ctx.db.get(follow.playerId);
+          if (!player) {
+            await ctx.db.delete(follow._id);
+            cleaned.userFollows++;
+          }
+        }
       }
     }
 

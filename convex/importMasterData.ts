@@ -439,25 +439,35 @@ export const calculatePlayerCourseStats = mutation({
   },
 });
 
-// Helper query to get all players for batched processing
+// Helper query to get all players for batched processing (PAGINATED)
 export const getAllPlayers = query({
-  handler: async (ctx) => {
-    return await ctx.db.query("players").collect();
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit || 200, 500); // Default 200, max 500
+    return await ctx.db.query("players").take(limit);
   },
 });
 
-// Query to get import status (small tables only - large tables shown after import completes)
+// Query to get import status (OPTIMIZED - uses existence checks instead of counting)
 export const getImportStatus = query({
   handler: async (ctx) => {
-    // Only count small tables to avoid Convex pagination limitations
-    const coursesCount = (await ctx.db.query("courses").collect()).length;
-    const mappingsCount = (await ctx.db.query("tournamentCourses").collect()).length;
-    const playersCount = (await ctx.db.query("players").collect()).length;
+    // Use .take(1) to check existence instead of counting all documents
+    // This prevents "Nearing documents read limit" errors
+    const hasCourses = await ctx.db.query("courses").take(1);
+    const hasMappings = await ctx.db.query("tournamentCourses").take(1);
+    const hasPlayers = await ctx.db.query("players").take(1);
 
     return {
-      courses: coursesCount,
-      tournamentMappings: mappingsCount,
-      players: playersCount,
+      courses: hasCourses.length,
+      tournamentMappings: hasMappings.length,
+      players: hasPlayers.length,
+      status: {
+        coursesImported: hasCourses.length > 0,
+        mappingsImported: hasMappings.length > 0,
+        playersImported: hasPlayers.length > 0,
+      },
     };
   },
 });
