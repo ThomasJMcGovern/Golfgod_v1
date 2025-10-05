@@ -342,3 +342,32 @@ export const deleteOrphanPlayers = mutation({
     };
   },
 });
+
+// Delete duplicate players that have no ESPN ID
+// These are players created during tournament imports that already exist with proper ESPN IDs
+export const deleteDuplicatePlayersWithoutEspnId = mutation({
+  handler: async (ctx) => {
+    const allPlayers = await ctx.db
+      .query("players")
+      .withIndex("by_name")
+      .collect();
+
+    let deleted = 0;
+    const deletedPlayers: string[] = [];
+
+    for (const player of allPlayers) {
+      // Only delete players without ESPN ID
+      if (!player.espnId) {
+        await ctx.db.delete(player._id);
+        deleted++;
+        deletedPlayers.push(player.name);
+      }
+    }
+
+    return {
+      deleted,
+      deletedPlayers,
+      message: `Deleted ${deleted} duplicate players without ESPN IDs`,
+    };
+  },
+});
