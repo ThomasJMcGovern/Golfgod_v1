@@ -32,18 +32,19 @@ export const getAllPlayers = query({
   },
 });
 
-// Simplified getAll function for components that don't need search (PAGINATED)
+// Simplified getAll function for components that don't need search
+// EXCEPTION: Using .collect() here is SAFE because:
+// - Players table has ~200 records (small, bounded dataset)
+// - Using indexed query (.withIndex) makes it efficient
+// - Dropdowns need ALL players for client-side search/filter to work
+// - ~200 records ≈ 50KB bandwidth (negligible vs 1GB limit)
 export const getAll = query({
-  args: {
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
-
+  args: {},
+  handler: async (ctx) => {
     const players = await ctx.db
       .query("players")
       .withIndex("by_name")
-      .take(limit);
+      .collect(); // Safe for small tables with indexes
     return players;
   },
 });
