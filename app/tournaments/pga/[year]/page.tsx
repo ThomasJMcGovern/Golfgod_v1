@@ -69,9 +69,9 @@ export default function YearTournamentsPage() {
   const year = parseInt(params.year as string);
   const [activeTour, setActiveTour] = useState("pga");
 
-  const availableYears = useQuery(api.tournaments.getAvailableYears);
+  const availableYears = useQuery(api.tournaments.getAvailableYears, {});
   const tournaments = useQuery(api.tournaments.getTournamentsByYear, { year });
-  const allPlayers = useQuery(api.players.getAllPlayerNamesAndIds);
+  const allPlayers = useQuery(api.players.getAllPlayerNamesAndIds, {});
 
   const formatPrizeMoney = (amount?: number) => {
     if (!amount) return "-";

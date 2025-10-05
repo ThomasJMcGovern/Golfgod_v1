@@ -18,8 +18,8 @@ export default function InsideTheRopes() {
   const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
   // Fetch courses and players
-  const courses = useQuery(api.courseStats.getAllCourses);
-  const players = useQuery(api.players.getAll);
+  const courses = useQuery(api.courseStats.getAllCourses, {});
+  const players = useQuery(api.players.getAll, {});
 
   // Fetch player stats for selected course
   const playerStats = useQuery(

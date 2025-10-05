@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TournamentsPage() {
   const router = useRouter();
-  const availableYears = useQuery(api.tournaments.getAvailableYears);
+  const availableYears = useQuery(api.tournaments.getAvailableYears, {});
 
   useEffect(() => {
     if (availableYears && availableYears.length > 0) {
