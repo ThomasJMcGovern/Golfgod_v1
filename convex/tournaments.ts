@@ -208,7 +208,10 @@ export const getTournamentStats = query({
   },
 });
 
-// Get all years with tournament data (PAGINATED)
+// DEPRECATED: Get all years with tournament data (PAGINATED)
+// This query is no longer used - years are generated directly in the frontend
+// to avoid unnecessary database queries and improve performance.
+// Can be removed in future cleanup.
 export const getAvailableYears = query({
   args: {
     limit: v.optional(v.number()),

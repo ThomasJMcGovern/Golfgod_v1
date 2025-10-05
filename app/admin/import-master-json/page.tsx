@@ -200,8 +200,8 @@ export default function ImportMasterJSON() {
 
           {/* Progress Display */}
           {isClearing && clearProgress.deleted > 0 && (
-            <div className="mt-4 p-3 bg-white rounded-lg border border-red-200">
-              <div className="text-sm text-gray-600 mb-1">
+            <div className="mt-4 p-3 bg-card rounded-lg border border-red-200">
+              <div className="text-sm text-foreground/80 mb-1">
                 Deleting <span className="font-semibold">{clearProgress.table}</span>...
               </div>
               <div className="text-lg font-bold text-red-700">

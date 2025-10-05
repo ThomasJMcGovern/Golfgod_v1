@@ -68,6 +68,11 @@ export const getPlayerCourseStats = query({
   },
 });
 
+// Validate if a score is within reasonable golf score range
+const isValidGolfScore = (score: number): boolean => {
+  return score >= 50 && score <= 100;
+};
+
 // Get individual tournament history for a player at a specific course
 export const getPlayerTournamentHistoryAtCourse = query({
   args: {
@@ -99,13 +104,10 @@ export const getPlayerTournamentHistoryAtCourse = query({
       const hasOnlyTwoRounds = result.scores && result.scores.length === 2;
       const missedCut = positionIndicatesMC || hasOnlyTwoRounds;
 
-      // If position is "Unknown" and player has only 2 rounds, they missed the cut
-      const displayPosition = (position === "UNKNOWN" && hasOnlyTwoRounds) ? "MC" : result.position;
-
       return {
         year: result.year,
         tournament: result.tournament,
-        position: displayPosition,
+        position: result.position, // Preserve actual position (Withdrawn, WD, MC, etc.)
         scores: result.scores || [],
         totalScore: result.totalScore,
         toPar: result.toPar,
@@ -197,19 +199,30 @@ export const calculatePlayerCourseStats = mutation({
     let r4Scores: number[] = [];
 
     for (const result of results) {
-      cutsPlayed++;
+      // Check position to exclude WD/DQ from cut statistics
+      const position = result.position?.toUpperCase() || "";
+      const isWithdrawnOrDQ = position.includes("WD") ||
+                              position.includes("WITHDRAWN") ||
+                              position.includes("DQ") ||
+                              position.includes("DNS");
 
-      // Check if made cut (has scores array with more than 2 rounds)
-      const madecut = result.scores && result.scores.length > 2;
-      if (madecut) {
-        cutsMade++;
+      // Only count cuts played if player actually competed (not WD/DQ/DNS)
+      if (!isWithdrawnOrDQ) {
+        cutsPlayed++;
+
+        // Check if made cut (has scores array with more than 2 rounds)
+        const madecut = result.scores && result.scores.length > 2;
+        if (madecut) {
+          cutsMade++;
+        }
       }
 
-      // Process scores
+      // Process scores - only include valid golf scores
       if (result.scores) {
         result.scores.forEach((score, index) => {
           const scoreNum = parseInt(score);
-          if (!isNaN(scoreNum)) {
+          // Add validation to exclude invalid scores (like "21")
+          if (!isNaN(scoreNum) && isValidGolfScore(scoreNum)) {
             totalStrokes += scoreNum;
             totalRounds++;
 
@@ -225,14 +238,15 @@ export const calculatePlayerCourseStats = mutation({
         });
       }
 
-      // Process position
-      const position = result.position;
-      const posNum = parseInt(position.replace(/[^0-9]/g, ''));
+      // Process position - only for players who competed
+      if (!isWithdrawnOrDQ) {
+        const posNum = parseInt(position.replace(/[^0-9]/g, ''));
 
-      if (!isNaN(posNum)) {
-        if (posNum === 1) wins++;
-        if (posNum <= 10) top10s++;
-        if (posNum <= 25) top25s++;
+        if (!isNaN(posNum)) {
+          if (posNum === 1) wins++;
+          if (posNum <= 10) top10s++;
+          if (posNum <= 25) top25s++;
+        }
       }
 
       // Add earnings

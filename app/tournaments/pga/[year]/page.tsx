@@ -8,6 +8,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
+import UserMenu from "@/components/layout/UserMenu";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   Select,
   SelectContent,
@@ -69,7 +71,19 @@ export default function YearTournamentsPage() {
   const year = parseInt(params.year as string);
   const [activeTour, setActiveTour] = useState("pga");
 
-  const availableYears = useQuery(api.tournaments.getAvailableYears, {});
+  // Generate available years directly in frontend (no database query needed)
+  const getAvailableYears = () => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2015;
+    const endYear = Math.max(currentYear + 1, 2026);
+
+    return Array.from(
+      { length: endYear - startYear + 1 },
+      (_, i) => endYear - i
+    );
+  };
+
+  const availableYears = getAvailableYears();
   const tournaments = useQuery(api.tournaments.getTournamentsByYear, { year });
   const allPlayers = useQuery(api.players.getAllPlayerNamesAndIds, {});
 
@@ -264,52 +278,64 @@ export default function YearTournamentsPage() {
       </Unauthenticated>
 
       <Authenticated>
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-background">
           {/* Header */}
-          <header className="bg-white border-b">
+          <header className="bg-card border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center py-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => router.push("/")}
-                  className="mr-3"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <h1 className="text-2xl font-bold">PGA TOUR Schedule {year}</h1>
-                <div className="w-10"></div>
+              <div className="flex justify-between items-center h-16">
+                <div className="flex items-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => router.push("/")}
+                    className="mr-3"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold">PGA TOUR Schedule {year}</h1>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <Button
+                    className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
+                    onClick={() => router.push("/")}
+                  >
+                    <span className="hidden sm:inline">PGA TOUR</span>
+                    <span className="sm:hidden">PGA</span>
+                  </Button>
+                  <ModeToggle />
+                  <UserMenu />
+                </div>
               </div>
             </div>
           </header>
 
           {/* Tour Navigation */}
-          <div className="border-b bg-gray-50">
+          <div className="border-b bg-secondary">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex gap-1 py-2">
                 <button
                   className={`px-4 py-2 font-medium ${
                     activeTour === "pga"
                       ? "text-red-600 border-b-2 border-red-600"
-                      : "text-gray-600 hover:text-gray-900"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                   onClick={() => setActiveTour("pga")}
                 >
                   PGA TOUR
                 </button>
-                <button className="px-4 py-2 text-gray-400 cursor-not-allowed">
+                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
                   LPGA
                 </button>
-                <button className="px-4 py-2 text-gray-400 cursor-not-allowed">
+                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
                   PGA TOUR Champions
                 </button>
-                <button className="px-4 py-2 text-gray-400 cursor-not-allowed">
+                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
                   LIV
                 </button>
-                <button className="px-4 py-2 text-gray-400 cursor-not-allowed">
+                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
                   DP World
                 </button>
-                <button className="px-4 py-2 text-gray-400 cursor-not-allowed">
+                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
                   Korn Ferry
                 </button>
               </div>
@@ -317,7 +343,7 @@ export default function YearTournamentsPage() {
           </div>
 
           {/* Year Selector */}
-          <div className="bg-white border-b">
+          <div className="bg-card border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
               <Select value={String(year)} onValueChange={handleYearChange}>
                 <SelectTrigger className="w-32">
@@ -363,7 +389,7 @@ export default function YearTournamentsPage() {
                                   {tournament.name}
                                 </div>
                                 {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-gray-500">
+                                  <div className="text-sm text-muted-foreground">
                                     {tournament.dates_raw.split("-")[1].trim()}
                                   </div>
                                 )}
@@ -380,7 +406,7 @@ export default function YearTournamentsPage() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <p className="text-gray-500 py-4">No tournaments are currently in progress</p>
+                    <p className="text-muted-foreground py-4">No tournaments are currently in progress</p>
                   )}
                 </div>
 
@@ -409,7 +435,7 @@ export default function YearTournamentsPage() {
                                   {tournament.name}
                                 </div>
                                 {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-gray-500">
+                                  <div className="text-sm text-muted-foreground">
                                     {tournament.dates_raw.split("-")[1].trim()}
                                   </div>
                                 )}
@@ -426,7 +452,7 @@ export default function YearTournamentsPage() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <p className="text-gray-500 py-4">No upcoming tournaments scheduled</p>
+                    <p className="text-muted-foreground py-4">No upcoming tournaments scheduled</p>
                   )}
                 </div>
 
@@ -455,7 +481,7 @@ export default function YearTournamentsPage() {
                                   {tournament.name}
                                 </div>
                                 {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-gray-500">
+                                  <div className="text-sm text-muted-foreground">
                                     {tournament.dates_raw.split("-")[1].trim()}
                                   </div>
                                 )}
@@ -469,7 +495,7 @@ export default function YearTournamentsPage() {
                                 <div className="text-sm">{tournament.winning_score}</div>
                               )}
                               {tournament.prize_money && (
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-foreground/80">
                                   {formatPrizeMoney(tournament.prize_money)}
                                 </div>
                               )}
@@ -479,7 +505,7 @@ export default function YearTournamentsPage() {
                       </TableBody>
                     </Table>
                   ) : (
-                    <p className="text-gray-500 py-4">No completed tournaments for this year</p>
+                    <p className="text-muted-foreground py-4">No completed tournaments for this year</p>
                   )}
                 </div>
               </div>

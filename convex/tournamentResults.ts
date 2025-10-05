@@ -279,21 +279,21 @@ export const importTournamentResults = mutation({
   },
 });
 
-// Get tournament results for a player (PAGINATED)
+// Get all tournament results for a player
 export const getPlayerTournamentResults = query({
   args: {
     playerId: v.id("players"),
     year: v.optional(v.number()),
-    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const limit = Math.min(args.limit || 100, 500); // Default 100, max 500
-
-    let query = ctx.db
+    // SAFE: Using .collect() is OK here because:
+    // - Query is filtered by playerId with index (bounded dataset)
+    // - Single player has ~200-500 tournaments max (not millions)
+    // - Same pattern as players.getAll for small, indexed queries
+    const results = await ctx.db
       .query("tournamentResults")
-      .withIndex("by_player", (q) => q.eq("playerId", args.playerId));
-
-    const results = await query.take(limit);
+      .withIndex("by_player", (q) => q.eq("playerId", args.playerId))
+      .collect();
 
     // Filter by year if provided
     const filtered = args.year

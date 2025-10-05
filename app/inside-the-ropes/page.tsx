@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import SearchableSelect from "@/components/ui/searchable-select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import UserMenu from "@/components/layout/UserMenu";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Trophy, TrendingUp, TrendingDown, Target, Wind, Calendar, DollarSign, Award, ChevronLeft } from "lucide-react";
 
 export default function InsideTheRopes() {
@@ -117,9 +120,9 @@ export default function InsideTheRopes() {
   })) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-background">
       {/* Header with Back Button */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-card border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -132,11 +135,22 @@ export default function InsideTheRopes() {
                 <ChevronLeft className="h-5 w-5" />
               </Button>
               <div>
-                <h1 className="text-xl font-semibold">Inside the Ropes</h1>
-                <p className="text-sm text-gray-500">
+                <h1 className="text-lg sm:text-xl font-semibold">Inside the Ropes</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                   Course-specific player performance and betting insights
                 </p>
               </div>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Button
+                className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
+                onClick={() => router.push("/")}
+              >
+                <span className="hidden sm:inline">PGA TOUR</span>
+                <span className="sm:hidden">PGA</span>
+              </Button>
+              <ModeToggle />
+              <UserMenu />
             </div>
           </div>
         </div>
@@ -145,7 +159,7 @@ export default function InsideTheRopes() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         {/* Course and Player Selection */}
-        <div className="grid md:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 md:mb-8">
           <div>
             <label className="text-sm font-medium mb-2 block">Select Course</label>
             {courses?.length === 0 ? (
@@ -181,9 +195,9 @@ export default function InsideTheRopes() {
 
       {/* Player Course Statistics */}
       {playerStats && (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {/* Overview Cards */}
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">Scoring Average</CardTitle>
@@ -247,84 +261,86 @@ export default function InsideTheRopes() {
 
           {/* Detailed Statistics Tabs */}
           <Tabs defaultValue="history" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="history">Tournament History</TabsTrigger>
-              <TabsTrigger value="scoring">Career Stats</TabsTrigger>
-              <TabsTrigger value="rounds">Rounds</TabsTrigger>
-              <TabsTrigger value="advanced">Advanced</TabsTrigger>
-              <TabsTrigger value="comparison">Comparison</TabsTrigger>
+            <TabsList className="inline-flex h-auto w-full justify-start overflow-x-auto scrollbar-hide lg:grid lg:grid-cols-5 lg:overflow-x-visible">
+              <TabsTrigger value="history" className="flex-shrink-0">Tournament History</TabsTrigger>
+              <TabsTrigger value="scoring" className="flex-shrink-0">Career Stats</TabsTrigger>
+              <TabsTrigger value="rounds" className="flex-shrink-0">Rounds</TabsTrigger>
+              <TabsTrigger value="advanced" className="flex-shrink-0">Advanced</TabsTrigger>
+              <TabsTrigger value="comparison" className="flex-shrink-0">Comparison</TabsTrigger>
             </TabsList>
 
             <TabsContent value="history" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Tournament-by-Tournament History at a Specific Course</CardTitle>
-                  <CardDescription>Individual tournament performances (most recent first)</CardDescription>
+                  <CardTitle className="text-base sm:text-lg md:text-xl">Tournament-by-Tournament History at a Specific Course</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Individual tournament performances (most recent first)</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 sm:p-6">
                   {tournamentHistory && tournamentHistory.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
+                    <ScrollArea className="w-full">
+                      <div className="min-w-[800px] p-4 sm:p-0">
+                        <table className="w-full">
                         <thead>
                           <tr className="border-b text-left">
-                            <th className="pb-3 font-semibold">Year</th>
-                            <th className="pb-3 font-semibold">Tournament</th>
-                            <th className="pb-3 font-semibold text-center">Position</th>
-                            <th className="pb-3 font-semibold text-center">Scorecard</th>
-                            <th className="pb-3 font-semibold text-center">Total</th>
-                            <th className="pb-3 font-semibold text-center">To Par</th>
-                            <th className="pb-3 font-semibold text-right">Earnings</th>
+                            <th className="pb-3 font-semibold text-xs sm:text-sm">Year</th>
+                            <th className="pb-3 font-semibold text-xs sm:text-sm">Tournament</th>
+                            <th className="pb-3 font-semibold text-center text-xs sm:text-sm">Position</th>
+                            <th className="pb-3 font-semibold text-center text-xs sm:text-sm">Scorecard</th>
+                            <th className="pb-3 font-semibold text-center text-xs sm:text-sm">Total</th>
+                            <th className="pb-3 font-semibold text-center text-xs sm:text-sm">To Par</th>
+                            <th className="pb-3 font-semibold text-right text-xs sm:text-sm">Earnings</th>
                           </tr>
                         </thead>
                         <tbody>
                           {tournamentHistory.map((tournament, index) => (
                             <tr key={index} className="border-b hover:bg-muted/50">
-                              <td className="py-3">{tournament.year}</td>
-                              <td className="py-3">{tournament.tournament}</td>
+                              <td className="py-3 text-xs sm:text-sm">{tournament.year}</td>
+                              <td className="py-3 text-xs sm:text-sm">{tournament.tournament}</td>
                               <td className="py-3 text-center">
                                 {tournament.position?.toUpperCase().includes("MC") ||
                                  tournament.position?.toUpperCase().includes("CUT") ||
                                  tournament.position?.toUpperCase().includes("WD") ? (
-                                  <Badge variant="outline" className="bg-gray-100">
+                                  <Badge variant="outline" className="bg-secondary text-xs">
                                     {tournament.position}
                                   </Badge>
                                 ) : (
-                                  <Badge variant={tournament.position === "1" ? "default" : "outline"}>
+                                  <Badge variant={tournament.position === "1" ? "default" : "outline"} className="text-xs">
                                     {tournament.position}
                                   </Badge>
                                 )}
                               </td>
                               <td className="py-3 text-center">
                                 {tournament.scorecard ? (
-                                  <span className="text-blue-600 font-mono">
+                                  <span className="text-blue-600 font-mono text-xs sm:text-sm">
                                     {tournament.scorecard}
                                   </span>
                                 ) : (
-                                  <span className="text-gray-400">-</span>
+                                  <span className="text-muted-foreground">-</span>
                                 )}
                               </td>
-                              <td className="py-3 text-center font-medium">
+                              <td className="py-3 text-center font-medium text-xs sm:text-sm">
                                 {tournament.totalScore || "-"}
                               </td>
-                              <td className="py-3 text-center">
+                              <td className="py-3 text-center text-xs sm:text-sm">
                                 {tournament.toPar !== undefined && tournament.toPar !== 0 ? (
                                   <span className={tournament.toPar < 0 ? "text-green-600 font-semibold" : "text-red-600"}>
                                     {tournament.toPar > 0 ? "+" : ""}{tournament.toPar}
                                   </span>
                                 ) : (
-                                  <span className="text-gray-500">E</span>
+                                  <span className="text-muted-foreground">E</span>
                                 )}
                               </td>
-                              <td className="py-3 text-right">
+                              <td className="py-3 text-right text-xs sm:text-sm">
                                 {formatMoney(tournament.earnings)}
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                    </div>
+                      </div>
+                    </ScrollArea>
                   ) : (
-                    <div className="text-center text-muted-foreground py-8">
+                    <div className="text-center text-muted-foreground py-8 text-sm sm:text-base p-4">
                       No tournament history found at this course
                     </div>
                   )}
@@ -335,11 +351,11 @@ export default function InsideTheRopes() {
             <TabsContent value="scoring" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Scoring Breakdown</CardTitle>
-                  <CardDescription>Round-by-round scoring averages at this course</CardDescription>
+                  <CardTitle className="text-base sm:text-lg md:text-xl">Scoring Breakdown</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Round-by-round scoring averages at this course</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div>
                       <h4 className="font-semibold mb-3">Individual Rounds</h4>
                       <div className="space-y-2">
@@ -412,11 +428,11 @@ export default function InsideTheRopes() {
             <TabsContent value="advanced" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Advanced Statistics</CardTitle>
-                  <CardDescription>Strokes gained and detailed metrics</CardDescription>
+                  <CardTitle className="text-base sm:text-lg md:text-xl">Advanced Statistics</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Strokes gained and detailed metrics</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     {/* Ball Striking Stats */}
                     <div>
                       <h4 className="font-semibold mb-3">Ball Striking</h4>

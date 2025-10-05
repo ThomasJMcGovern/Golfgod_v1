@@ -26,11 +26,16 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
     return null;
   }
 
-  // Get unique years from tournament results
+  // Generate available years directly in frontend (no database query dependency)
   const getAvailableYears = () => {
-    if (!tournamentResults || tournamentResults.length === 0) return [];
-    const years = [...new Set(tournamentResults.map(r => r.year))].sort((a, b) => b - a);
-    return years;
+    const currentYear = new Date().getFullYear();
+    const startYear = 2015;
+    const endYear = Math.max(currentYear + 1, 2026);
+
+    return Array.from(
+      { length: endYear - startYear + 1 },
+      (_, i) => endYear - i
+    );
   };
 
   // Filter results by selected year
@@ -61,7 +66,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
   const getPositionStyle = (position: string) => {
     if (position === "1") return "font-bold text-yellow-600";
     if (position.startsWith("T") && parseInt(position.substring(1)) <= 10) return "text-green-600";
-    if (position === "Missed Cut" || position === "MC") return "text-gray-400";
+    if (position === "Missed Cut" || position === "MC") return "text-muted-foreground";
     if (position === "WD" || position === "DQ") return "text-red-400";
     return "";
   };
@@ -115,25 +120,25 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <TrendingUp className="h-5 w-5 text-gray-400" />
+                      <TrendingUp className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-gray-500">Avg SG:APP</p>
+                        <p className="text-sm text-muted-foreground">Avg SG:APP</p>
                         <p className="text-xl font-semibold">{stats.avgSgApp?.toFixed(2) || "N/A"}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Target className="h-5 w-5 text-gray-400" />
+                      <Target className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-gray-500">Fairways Hit %</p>
+                        <p className="text-sm text-muted-foreground">Fairways Hit %</p>
                         <p className="text-xl font-semibold">{stats.fairwaysHit ? `${stats.fairwaysHit.toFixed(1)}%` : "N/A"}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Activity className="h-5 w-5 text-gray-400" />
+                      <Activity className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-gray-500">Avg Putts</p>
+                        <p className="text-sm text-muted-foreground">Avg Putts</p>
                         <p className="text-xl font-semibold">{stats.avgPutts?.toFixed(1) || "N/A"}</p>
                       </div>
                     </div>
@@ -141,9 +146,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <DollarSign className="h-5 w-5 text-gray-400" />
+                      <DollarSign className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-gray-500">Earnings</p>
+                        <p className="text-sm text-muted-foreground">Earnings</p>
                         <p className="text-xl font-semibold">
                           ${stats.earnings ? (stats.earnings / 1000000).toFixed(2) + "M" : "N/A"}
                         </p>
@@ -151,12 +156,12 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                     </div>
 
                     <div>
-                      <p className="text-sm text-gray-500">Tournaments</p>
+                      <p className="text-sm text-muted-foreground">Tournaments</p>
                       <p className="text-xl font-semibold">{stats.tournaments || "N/A"}</p>
                     </div>
 
                     <div>
-                      <p className="text-sm text-gray-500">Wins / Top 10s</p>
+                      <p className="text-sm text-muted-foreground">Wins / Top 10s</p>
                       <p className="text-xl font-semibold">
                         {stats.wins || 0} / {stats.top10s || 0}
                       </p>
@@ -164,20 +169,20 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500">
+                <div className="text-muted-foreground">
                   No statistics available for 2024
                 </div>
               )}
 
               {/* Advanced Metrics */}
-              <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+              <div className="mt-8 p-4 bg-secondary rounded-lg">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-semibold">Advanced Metrics</h4>
                   <Badge variant="secondary" className="bg-amber-100 text-amber-700">
                     PREMIUM
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-foreground/80">
                   <p className="mb-2">Unlock premium metrics:</p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>Wind Performance Splits</li>
@@ -195,7 +200,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
           {/* News Tab */}
           <TabsContent value="news" className="p-6">
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-muted-foreground py-8">
               <h3 className="text-lg font-semibold mb-2">Player News</h3>
               <p>Latest news and updates coming soon</p>
             </div>
@@ -209,13 +214,13 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
               {/* Personal Information */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h4 className="font-medium text-gray-700 border-b pb-2">Personal Information</h4>
+                  <h4 className="font-medium text-foreground border-b pb-2">Personal Information</h4>
 
                   {player.birthDate && (
                     <div className="flex items-start gap-3">
-                      <Calendar className="h-4 w-4 text-gray-400 mt-1" />
+                      <Calendar className="h-4 w-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wide">Birthdate</p>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wide">Birthdate</p>
                         <p className="font-medium">
                           {player.birthDate} ({calculateAge(player.birthDate)} years old)
                         </p>
@@ -225,9 +230,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
                   {player.birthPlace && (
                     <div className="flex items-start gap-3">
-                      <MapPin className="h-4 w-4 text-gray-400 mt-1" />
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wide">Birthplace</p>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wide">Birthplace</p>
                         <p className="font-medium">{player.birthPlace}</p>
                       </div>
                     </div>
@@ -235,9 +240,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
                   {player.college && (
                     <div className="flex items-start gap-3">
-                      <GraduationCap className="h-4 w-4 text-gray-400 mt-1" />
+                      <GraduationCap className="h-4 w-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wide">College</p>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wide">College</p>
                         <p className="font-medium">{player.college}</p>
                       </div>
                     </div>
@@ -245,13 +250,13 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="font-medium text-gray-700 border-b pb-2">Professional Details</h4>
+                  <h4 className="font-medium text-foreground border-b pb-2">Professional Details</h4>
 
                   {player.turnedPro && (
                     <div className="flex items-start gap-3">
-                      <User className="h-4 w-4 text-gray-400 mt-1" />
+                      <User className="h-4 w-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wide">Turned Pro</p>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wide">Turned Pro</p>
                         <p className="font-medium">{player.turnedPro}</p>
                       </div>
                     </div>
@@ -259,9 +264,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
                   {player.swing && (
                     <div className="flex items-start gap-3">
-                      <Activity className="h-4 w-4 text-gray-400 mt-1" />
+                      <Activity className="h-4 w-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500 uppercase tracking-wide">Swing</p>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wide">Swing</p>
                         <p className="font-medium">{player.swing}</p>
                       </div>
                     </div>
@@ -270,9 +275,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                   <div className="flex gap-6">
                     {player.height && (
                       <div className="flex items-start gap-3">
-                        <Ruler className="h-4 w-4 text-gray-400 mt-1" />
+                        <Ruler className="h-4 w-4 text-muted-foreground mt-1" />
                         <div>
-                          <p className="text-sm text-gray-500 uppercase tracking-wide">Height</p>
+                          <p className="text-sm text-muted-foreground uppercase tracking-wide">Height</p>
                           <p className="font-medium">{player.height}</p>
                         </div>
                       </div>
@@ -280,9 +285,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
 
                     {player.weight && (
                       <div className="flex items-start gap-3">
-                        <Weight className="h-4 w-4 text-gray-400 mt-1" />
+                        <Weight className="h-4 w-4 text-muted-foreground mt-1" />
                         <div>
-                          <p className="text-sm text-gray-500 uppercase tracking-wide">Weight</p>
+                          <p className="text-sm text-muted-foreground uppercase tracking-wide">Weight</p>
                           <p className="font-medium">{player.weight} lbs</p>
                         </div>
                       </div>
@@ -292,9 +297,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
               </div>
 
               {/* Career Highlights - Placeholder for future */}
-              <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-                <h4 className="font-medium text-gray-700 mb-3">Career Highlights</h4>
-                <p className="text-gray-600 text-sm">
+              <div className="mt-8 p-6 bg-secondary rounded-lg">
+                <h4 className="font-medium text-foreground mb-3">Career Highlights</h4>
+                <p className="text-foreground/80 text-sm">
                   Detailed career achievements, major wins, and professional highlights will be displayed here.
                 </p>
               </div>
@@ -308,11 +313,11 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                 <>
                   {/* Year Selector Tabs */}
                   <Tabs defaultValue="all" value={String(selectedYear)} onValueChange={(value) => setSelectedYear(value === "all" ? "all" : Number(value))}>
-                    <TabsList className="w-full h-auto p-0 bg-gray-50 rounded-none border-b">
+                    <TabsList className="w-full h-auto p-0 bg-secondary rounded-none border-b">
                       <div className="flex w-full overflow-x-auto">
                         <TabsTrigger
                           value="all"
-                          className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white px-4 py-3 text-sm font-medium"
+                          className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
                         >
                           All Years
                         </TabsTrigger>
@@ -320,7 +325,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                           <TabsTrigger
                             key={year}
                             value={String(year)}
-                            className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white px-4 py-3 text-sm font-medium"
+                            className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
                           >
                             {year}
                           </TabsTrigger>
@@ -334,7 +339,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                           <h3 className="text-lg font-semibold">
                             {selectedYear === "all" ? "Career" : selectedYear} Tournament Results
                           </h3>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-muted-foreground">
                             {filteredResults?.length || 0} tournaments
                           </span>
                         </div>
@@ -356,8 +361,8 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                   <th className="pb-2"></th>
                                   <th className="pb-2"></th>
                                   <th className="pb-2"></th>
-                                  <th className="pb-2 font-normal text-xs text-gray-500 text-center">To Par</th>
-                                  <th className="pb-2 font-normal text-xs text-gray-500 text-center">Total</th>
+                                  <th className="pb-2 font-normal text-xs text-muted-foreground text-center">To Par</th>
+                                  <th className="pb-2 font-normal text-xs text-muted-foreground text-center">Total</th>
                                   <th className="pb-2"></th>
                                 </tr>
                               </thead>
@@ -365,9 +370,9 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                 {filteredResults.map((result, index) => (
                                   <tr
                                     key={result._id}
-                                    className="border-b hover:bg-gray-50 transition-colors"
+                                    className="border-b hover:bg-secondary/50 transition-colors"
                                   >
-                                    <td className="py-3 text-gray-600">{result.date}</td>
+                                    <td className="py-3 text-foreground/80">{result.date}</td>
                                     <td className="py-3 font-medium">{result.tournament}</td>
                                     <td className={`py-3 text-center ${getPositionStyle(result.position)}`}>
                                       {result.position}
@@ -378,11 +383,11 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                           {result.scores.join("-")}
                                         </span>
                                       ) : (
-                                        <span className="text-gray-400">-</span>
+                                        <span className="text-muted-foreground">-</span>
                                       )}
                                     </td>
-                                    <td className="py-3 text-center text-gray-600">{result.score}</td>
-                                    <td className="py-3 text-center text-gray-600">{result.overall}</td>
+                                    <td className="py-3 text-center text-foreground/80">{result.score}</td>
+                                    <td className="py-3 text-center text-foreground/80">{result.overall}</td>
                                     <td className="py-3 text-right font-medium">
                                       {formatEarnings(result.earnings || 0)}
                                     </td>
@@ -402,7 +407,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                                 </tr>
                                 {selectedYear === "all" && (
                                   <tr>
-                                    <td colSpan={7} className="pt-2 text-sm text-gray-500">
+                                    <td colSpan={7} className="pt-2 text-sm text-muted-foreground">
                                       <div className="flex justify-between">
                                         <span>Wins: {filteredResults.filter(r => r.position === "1").length}</span>
                                         <span>Top 10s: {filteredResults.filter(r => {
@@ -420,7 +425,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                             </table>
                           </div>
                         ) : (
-                          <div className="text-center py-8 text-gray-500">
+                          <div className="text-center py-8 text-muted-foreground">
                             <p>No tournament results for {selectedYear === "all" ? "this player" : selectedYear}.</p>
                           </div>
                         )}
@@ -429,12 +434,12 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                   </Tabs>
                 </>
               ) : tournamentResults === undefined ? (
-                <div className="text-center py-8 text-gray-500">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+                <div className="text-center py-8 text-muted-foreground">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mx-auto mb-2"></div>
                   Loading tournament results...
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-muted-foreground">
                   <p>No tournament results available for this player.</p>
                   <p className="text-sm mt-2">Import tournament data via the CSV tool to see results here.</p>
                 </div>
@@ -446,7 +451,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
           <TabsContent value="scorecards" className="p-6">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Scorecards</h3>
-              <div className="text-gray-500">
+              <div className="text-muted-foreground">
                 <p>Detailed scorecards from recent rounds will be available here.</p>
               </div>
             </div>

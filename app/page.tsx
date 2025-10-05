@@ -43,12 +43,12 @@ export default function Home() {
           {/* Header */}
           <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-16">
-                <div className="flex items-center">
-                  <h1 className="text-2xl font-bold">GolfGod</h1>
-                  <span className="ml-2 text-sm text-muted-foreground">PGA Tour Analytics</span>
+              <div className="flex justify-between items-center h-14 sm:h-16">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-bold">GolfGod</h1>
+                  <span className="hidden sm:inline ml-2 text-xs sm:text-sm text-muted-foreground">PGA Tour Analytics</span>
                 </div>
-                <Button onClick={() => setDialogOpen(true)}>
+                <Button onClick={() => setDialogOpen(true)} size="sm" className="sm:size-default">
                   Sign In
                 </Button>
               </div>
@@ -56,16 +56,16 @@ export default function Home() {
           </header>
 
           {/* Hero Section */}
-          <main className="pt-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+          <main className="pt-14 sm:pt-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
               <div className="text-center">
-                <h2 className="text-5xl font-bold mb-4">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
                   Master Your Golf Analytics
                 </h2>
-                <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
                   Comprehensive statistical analysis for PGA Tour events. Track players, tournaments, and gain expert insights.
                 </p>
-                <Button size="lg" onClick={() => setDialogOpen(true)}>
+                <Button size="default" className="sm:size-lg" onClick={() => setDialogOpen(true)}>
                   Get Started
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -73,40 +73,40 @@ export default function Home() {
             </div>
 
             {/* Features */}
-            <div className="bg-secondary/20 py-24">
+            <div className="bg-secondary/20 py-12 sm:py-16 md:py-24">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                   <Card>
-                    <CardHeader>
-                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
-                        <User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <CardTitle>Player Analytics</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-base sm:text-lg">Player Analytics</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
                         View detailed profiles, statistics, and tournament history for 156+ active players
                       </CardDescription>
                     </CardHeader>
                   </Card>
 
                   <Card>
-                    <CardHeader>
-                      <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
-                        <Trophy className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <CardTitle>Tournament Tracking</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-base sm:text-lg">Tournament Tracking</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
                         Browse current, completed, and upcoming tournaments with comprehensive data
                       </CardDescription>
                     </CardHeader>
                   </Card>
 
                   <Card>
-                    <CardHeader>
-                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4">
-                        <BarChart3 className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 dark:text-orange-400" />
                       </div>
-                      <CardTitle>Expert Insights</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-base sm:text-lg">Expert Insights</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
                         Expert analysis, course insights, and betting strategies to elevate your game
                       </CardDescription>
                     </CardHeader>

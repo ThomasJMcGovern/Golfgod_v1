@@ -15,7 +15,7 @@ export default function PlayerRankings({ onSelectPlayer }: PlayerRankingsProps) 
     return (
       <div className="space-y-2">
         {[...Array(10)].map((_, i) => (
-          <div key={i} className="h-10 bg-gray-100 animate-pulse rounded"></div>
+          <div key={i} className="h-10 bg-secondary animate-pulse rounded"></div>
         ))}
       </div>
     );
@@ -25,7 +25,7 @@ export default function PlayerRankings({ onSelectPlayer }: PlayerRankingsProps) 
     <div>
       <h3 className="font-semibold mb-3">Men's Top 200</h3>
       <div className="space-y-1 max-h-96 overflow-y-auto">
-        <div className="grid grid-cols-[40px_1fr] gap-2 text-xs font-medium text-gray-500 pb-2 border-b">
+        <div className="grid grid-cols-[40px_1fr] gap-2 text-xs font-medium text-muted-foreground pb-2 border-b">
           <div>RK</div>
           <div>NAME</div>
         </div>
@@ -35,7 +35,7 @@ export default function PlayerRankings({ onSelectPlayer }: PlayerRankingsProps) 
             onClick={() => onSelectPlayer(player._id)}
             className="w-full grid grid-cols-[40px_1fr] gap-2 py-2 px-1 hover:bg-blue-50 rounded transition-colors text-left"
           >
-            <div className="text-sm font-medium text-gray-600">
+            <div className="text-sm font-medium text-foreground/80">
               {player.worldRanking || index + 1}
             </div>
             <div className="flex items-center gap-2">

@@ -24,7 +24,7 @@ export default function TournamentsPage() {
 
   // Show loading state while determining which year to redirect to
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <div className="mb-4">
           <Skeleton className="h-8 w-48 mx-auto mb-2" />

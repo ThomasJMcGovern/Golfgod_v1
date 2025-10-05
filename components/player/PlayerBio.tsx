@@ -21,11 +21,11 @@ export default function PlayerBio({ playerId }: PlayerBioProps) {
     return (
       <Card className="animate-pulse">
         <CardHeader className="pb-0">
-          <div className="h-32 bg-gray-200 rounded-lg"></div>
+          <div className="h-32 bg-secondary rounded-lg"></div>
         </CardHeader>
         <CardContent className="space-y-4 pt-6">
-          <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          <div className="h-8 bg-secondary rounded w-1/2"></div>
+          <div className="h-4 bg-secondary rounded w-3/4"></div>
         </CardContent>
       </Card>
     );
@@ -49,7 +49,7 @@ export default function PlayerBio({ playerId }: PlayerBioProps) {
         <div className="flex items-start">
           <div className="flex items-start gap-6">
             {/* Player Avatar */}
-            <div className="relative h-32 w-32 border-4 border-white shadow-lg rounded-full overflow-hidden bg-gray-100">
+            <div className="relative h-32 w-32 border-4 border-card shadow-lg rounded-full overflow-hidden bg-secondary">
               {player.photoUrl ? (
                 <img
                   src={player.photoUrl}
@@ -69,14 +69,14 @@ export default function PlayerBio({ playerId }: PlayerBioProps) {
               <h2 className="text-3xl font-bold mb-1">
                 {player.firstName.toUpperCase()} {player.lastName.toUpperCase()}
               </h2>
-              <div className="flex items-center gap-2 text-gray-600 mb-4">
+              <div className="flex items-center gap-2 text-muted-foreground mb-4">
                 {getFlagEmoji(player.countryCode)}
                 <span>{player.country}</span>
               </div>
 
               <Button
                 onClick={handleFollowToggle}
-                className={isFollowing ? "bg-gray-200 text-gray-700 hover:bg-gray-300" : "bg-blue-600 hover:bg-blue-700"}
+                className={isFollowing ? "bg-secondary text-secondary-foreground hover:bg-secondary/80" : "bg-blue-600 hover:bg-blue-700"}
               >
                 {isFollowing ? "Following" : "Follow"}
               </Button>

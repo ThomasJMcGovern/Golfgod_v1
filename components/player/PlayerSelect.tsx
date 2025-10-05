@@ -90,7 +90,7 @@ export default function PlayerSelect({ onSelectPlayer, selectedPlayerId }: Playe
 
   if (!players) {
     return (
-      <div className="h-10 bg-gray-100 animate-pulse rounded-md"></div>
+      <div className="h-10 bg-secondary animate-pulse rounded-md"></div>
     );
   }
 

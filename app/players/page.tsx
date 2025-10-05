@@ -9,15 +9,24 @@ import PlayerBio from "@/components/player/PlayerBio";
 import PlayerRankings from "@/components/player/PlayerRankings";
 import PlayerStats from "@/components/player/PlayerStats";
 import UserMenu from "@/components/layout/UserMenu";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function PlayersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedPlayerId, setSelectedPlayerId] = useState<Id<"players"> | null>(null);
   const [activeTab, setActiveTab] = useState("players");
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Check for playerId in URL parameters on mount
   useEffect(() => {
@@ -44,34 +53,78 @@ export default function PlayersPage() {
       </Unauthenticated>
 
       <Authenticated>
-        <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+        <div className="min-h-screen bg-background">
           {/* Header */}
-          <header className="bg-white border-b border-gray-200">
+          <header className="bg-card border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-16">
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => router.push("/")}
-                    className="mr-3"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
+                  {/* Mobile Menu Button */}
+                  <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                    <SheetTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="lg:hidden"
+                      >
+                        <Menu className="h-5 w-5" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-80">
+                      <SheetHeader>
+                        <SheetTitle>Player Selection</SheetTitle>
+                      </SheetHeader>
+                      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="players">Players</TabsTrigger>
+                          <TabsTrigger value="rankings">Rankings</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="players" className="mt-4">
+                          <h3 className="font-semibold mb-3">Select Player</h3>
+                          <PlayerSelect
+                            onSelectPlayer={(id) => {
+                              setSelectedPlayerId(id);
+                              setSheetOpen(false);
+                            }}
+                            selectedPlayerId={selectedPlayerId}
+                          />
+                        </TabsContent>
+
+                        <TabsContent value="rankings" className="mt-4">
+                          <PlayerRankings
+                            onSelectPlayer={(id) => {
+                              setSelectedPlayerId(id);
+                              setSheetOpen(false);
+                            }}
+                          />
+                        </TabsContent>
+                      </Tabs>
+                    </SheetContent>
+                  </Sheet>
                   <div>
-                    <h1 className="text-xl font-semibold">Player Analytics</h1>
-                    <p className="text-sm text-gray-500">
+                    <h1 className="text-lg sm:text-xl font-semibold">Player Analytics</h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                       Select a player to view detailed statistics
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <Button
-                    className="bg-green-700 hover:bg-green-800 text-white"
+                    className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
                     onClick={() => router.push("/")}
                   >
-                    PGA TOUR
+                    <span className="hidden sm:inline">PGA TOUR</span>
+                    <span className="sm:hidden">PGA</span>
                   </Button>
+                  <ModeToggle />
                   <UserMenu />
                 </div>
               </div>
@@ -79,11 +132,11 @@ export default function PlayersPage() {
           </header>
 
           {/* Main Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex gap-6">
-              {/* Left Sidebar */}
-              <div className="w-80 flex-shrink-0">
-                <div className="bg-white rounded-lg shadow p-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="flex gap-4 lg:gap-6">
+              {/* Left Sidebar - Desktop Only */}
+              <div className="hidden lg:block w-80 flex-shrink-0">
+                <div className="bg-card rounded-lg shadow p-4 sticky top-4">
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="players">Players</TabsTrigger>
@@ -108,17 +161,17 @@ export default function PlayersPage() {
               </div>
 
               {/* Main Content Area */}
-              <div className="flex-1">
+              <div className="flex-1 w-full">
                 {selectedPlayerId ? (
                   <div className="space-y-6">
                     <PlayerBio playerId={selectedPlayerId} />
                     <PlayerStats playerId={selectedPlayerId} />
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg shadow p-12 text-center">
-                    <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="bg-card rounded-lg shadow p-6 sm:p-12 text-center">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg
-                        className="w-12 h-12 text-green-600"
+                        className="w-8 h-8 sm:w-12 sm:h-12 text-green-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -131,9 +184,17 @@ export default function PlayersPage() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">Select a Player</h3>
-                    <p className="text-gray-500">
-                      Choose a player from the list to view their profile, statistics, and tournament history
+                    <h3 className="text-lg sm:text-xl font-semibold mb-2">Select a Player</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-4">
+                      Choose a player from the {" "}
+                      <button
+                        onClick={() => setSheetOpen(true)}
+                        className="text-green-600 hover:text-green-700 underline lg:hidden"
+                      >
+                        menu
+                      </button>
+                      <span className="hidden lg:inline">list</span>
+                      {" "}to view their profile, statistics, and tournament history
                     </p>
                   </div>
                 )}
