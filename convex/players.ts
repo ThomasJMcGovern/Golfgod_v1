@@ -371,3 +371,17 @@ export const deleteDuplicatePlayersWithoutEspnId = mutation({
     };
   },
 });
+
+// Get total player count (efficient - just returns count)
+export const getPlayerCount = query({
+  args: {},
+  handler: async (ctx) => {
+    // Use collect on small table (200 players with index is safe)
+    const players = await ctx.db
+      .query("players")
+      .withIndex("by_name")
+      .collect();
+
+    return { count: players.length };
+  },
+});

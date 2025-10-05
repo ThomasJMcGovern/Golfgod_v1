@@ -2,6 +2,8 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +21,7 @@ import {
 export default function Dashboard() {
   const { signOut } = useAuthActions();
   const router = useRouter();
+  const playerStats = useQuery(api.players.getPlayerCount, {});
 
   const handleSignOut = async () => {
     await signOut();
@@ -89,7 +92,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="flex items-center text-sm text-muted-foreground">
                 <Users className="w-4 h-4 mr-1" />
-                205 Players
+                {playerStats?.count || 0} Players
               </div>
             </CardContent>
           </Card>
@@ -156,7 +159,7 @@ export default function Dashboard() {
                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <div className="text-3xl font-bold">205</div>
+                <div className="text-3xl font-bold">{playerStats?.count || 0}</div>
                 <div className="text-sm text-muted-foreground">Active Players</div>
               </div>
 
