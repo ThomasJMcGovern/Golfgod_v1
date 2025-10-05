@@ -11,7 +11,7 @@ import {
   getCourseKey,
   madeCut,
   parseDate,
-} from "./dataProcessing";
+} from "./utils/dataProcessing";
 
 // Step 1: Import courses from master data
 export const importCourses = mutation({

@@ -2,77 +2,141 @@
 
 Welcome to the comprehensive documentation for GolfGod - a PGA Tour analytics platform built with Next.js and Convex.
 
-## 📚 Documentation Structure
+## 📚 Core Documentation
 
-### Getting Started
-- [**Installation Guide**](./setup/installation.md) - Setup instructions and requirements
-- [**Quick Start**](./setup/quick-start.md) - Get up and running in 5 minutes
-- [**Configuration**](./setup/configuration.md) - Environment variables and settings
-
-### Architecture
-- [**System Overview**](./architecture/overview.md) - High-level architecture and design decisions
-- [**Database Schema**](./architecture/database-schema.md) - Convex database tables and relationships
-- [**Data Flow**](./architecture/data-flow.md) - How data moves through the application
-- [**Authentication**](./architecture/authentication.md) - Auth system and protected routes
+### Essential Guides
+- **[Main README](../README.md)** - Project overview, quick start, tech stack
+- **[Inside the Ropes](./INSIDE_THE_ROPES.md)** - Course-specific player analytics methodology
+- **[Database Schema](./DATABASE_SCHEMA.md)** - Complete schema reference (9 tables)
+- **[Development Guide](./DEVELOPMENT.md)** - Local setup, debugging, common tasks
 
 ### API Reference
-- [**Players API**](./api/players.md) - Player data endpoints and queries
-- [**Tournament Results API**](./api/tournament-results.md) - Tournament data management
-- [**Statistics API**](./api/statistics.md) - Player statistics and analytics
-- [**Authentication API**](./api/authentication.md) - User authentication endpoints
-
-### Components
-- [**Component Library**](./components/overview.md) - UI component documentation
-- [**Player Components**](./components/player-components.md) - Player-specific components
-- [**UI Components**](./components/ui-components.md) - Shadcn/ui component reference
-- [**Layout Components**](./components/layout-components.md) - Page layouts and structure
-
-### Features
-- [**Player Analytics**](./features/player-analytics.md) - Player profiles and statistics
-- [**Tournament Results**](./features/tournament-results.md) - Tournament data display
-- [**Data Import**](./features/data-import.md) - CSV and JSON import functionality
-- [**Search & Filtering**](./features/search-filtering.md) - Search capabilities
+- **[Course Stats API](./api/course-stats.md)** - Course performance analytics
+- **[Import Master Data](./api/import-master-data.md)** - Production data import pipeline
 
 ### Administration
-- [**Admin Dashboard**](./admin/dashboard.md) - Admin interface overview
-- [**Data Management**](./admin/data-management.md) - Import, export, and cleanup
-- [**User Management**](./admin/user-management.md) - User administration
+- **[Data Management](./admin/data-management.md)** - Database management and import tools
+- **[Data Automation Strategy](./DATA_AUTOMATION_STRATEGY.md)** - Future automation roadmap
 
-### Development
-- [**Development Setup**](./development/setup.md) - Local development environment
-- [**Code Style Guide**](./development/code-style.md) - Coding standards and conventions
-- [**Testing Guide**](./development/testing.md) - Testing strategies and tools
-- [**Debugging**](./development/debugging.md) - Debugging tips and tools
+---
 
-### Deployment
-- [**Deployment Guide**](./deployment/production.md) - Deploy to production
-- [**Environment Configuration**](./deployment/environment.md) - Production settings
-- [**Performance Optimization**](./deployment/performance.md) - Optimization strategies
-- [**Monitoring**](./deployment/monitoring.md) - Application monitoring
+## 🎯 Feature Overview
 
-## 🚀 Quick Links
+### Inside the Ropes - Course-Specific Player Intelligence
+Deep-dive analytics revealing how players perform at specific golf courses:
+- **Tournament-by-Tournament History**: Complete performance records at each venue
+- **Course Performance Metrics**: Scoring averages, best/worst rounds, cut percentages
+- **Round-by-Round Analysis**: Average scores by round (R1, R2, R3, R4)
+- **Weekend vs Early Scoring**: Performance comparison between early rounds and weekend play
 
-- **Repository**: [GitHub](https://github.com/your-org/golfgod)
-- **Live Demo**: [golfgod.vercel.app](https://golfgod.vercel.app)
-- **Convex Dashboard**: [dashboard.convex.dev](https://dashboard.convex.dev)
+### Core Analytics
+- **Player Profiles**: Comprehensive bios, photos, career statistics
+- **Tournament Database**: 20,745+ tournament results across 200+ players
+- **Real-time Rankings**: PGA Tour world rankings and player follows
+- **Advanced Filtering**: Searchable dropdowns with type-to-filter functionality
 
-## 📖 About GolfGod
+---
 
-GolfGod is a comprehensive PGA Tour analytics platform that provides:
-- Real-time player statistics and rankings
-- Tournament results and historical data
-- Advanced analytics and performance metrics
-- User authentication and personalized follows
-- Administrative tools for data management
+## 🗄️ Database Architecture
+
+**9 Core Tables**:
+- `players` - Player profiles and metadata
+- `courses` - Golf course information
+- `tournamentResults` - Historical performance data
+- `playerCourseStats` - Aggregated course performance
+- `tournamentCourses` - Tournament-to-course mapping
+- `pgaTournaments` - Tournament metadata
+- `roundStats` - Individual round statistics
+- `playerStats` - Annual player statistics
+- `userFollows` - User-player relationships
+
+---
 
 ## 🛠 Technology Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Backend**: Convex (real-time database)
-- **Styling**: Tailwind CSS, Radix UI, Shadcn/ui
-- **Authentication**: Convex Auth
-- **Data Processing**: PapaParse, react-select
+| Category | Technology | Purpose |
+|----------|------------|---------|
+| **Framework** | Next.js 15 | React framework with App Router |
+| **UI Library** | React 19 | Modern React with Server Components |
+| **Database** | Convex | Real-time backend-as-a-service |
+| **Styling** | Tailwind CSS 4.0 | Utility-first CSS framework |
+| **Components** | shadcn/ui | Beautiful, accessible UI components |
+| **Language** | TypeScript 5.0 | Type-safe JavaScript |
+| **Forms** | react-select | Advanced searchable dropdowns |
+| **Package Manager** | Bun | Ultra-fast JavaScript runtime |
 
-## 📝 License
+---
 
-Copyright © 2024 GolfGod. All rights reserved.
+## 📥 Data Pipeline
+
+```
+Master JSON Files (scripts/)
+    ↓
+Admin UI (/admin/import-master-json)
+    ↓
+Convex Action (importMasterDataBatch)
+    ↓
+Batch Processing (100 players at a time)
+    ↓
+Database Tables (players, courses, tournamentResults)
+```
+
+**Active Import System**: `convex/importMasterData.ts`
+**Helper Utilities**: `convex/utils/dataProcessing.ts`
+
+---
+
+## 🚀 Quick Links
+
+- **Main README**: [../README.md](../README.md)
+- **Convex Dashboard**: [dashboard.convex.dev](https://dashboard.convex.dev)
+- **GitHub Issues**: Report issues and feature requests
+
+---
+
+## 📖 Project Structure
+
+```
+golfgod_x_convex/
+├── app/                          # Next.js App Router pages
+│   ├── inside-the-ropes/         # Course-specific player analytics
+│   ├── tournaments/pga/          # Tournament browsing & results
+│   ├── admin/                    # Admin pages (data management, imports)
+│   └── api/                      # API routes (imports, JSON handling)
+├── components/                    # React components
+│   ├── layout/                   # Dashboard, navigation
+│   ├── player/                   # Player-specific components
+│   └── ui/                       # shadcn/ui & custom components
+├── convex/                       # Convex backend
+│   ├── schema.ts                 # Database schema (9 tables)
+│   ├── courseStats.ts            # Course analytics queries
+│   ├── players.ts                # Player data queries
+│   ├── importMasterData.ts       # Batch data import pipeline
+│   ├── utils/                    # Helper utilities
+│   └── _generated/               # Convex auto-generated types
+├── docs/                         # Documentation
+│   ├── api/                      # API reference docs
+│   └── admin/                    # Admin guides
+└── scripts/                      # Data import scripts
+```
+
+---
+
+## 📝 Contributing
+
+We welcome contributions! See the main [README](../README.md#contributing) for development workflow and code style guidelines.
+
+---
+
+## 🙏 Acknowledgments
+
+- **PGA Tour** for the incredible sport and data
+- **Convex** for the amazing real-time backend platform
+- **Vercel** for Next.js and deployment infrastructure
+- **shadcn** for the beautiful UI component library
+
+---
+
+**Built with ❤️ by golf fans, for golf fans** 🏌️‍♂️
+
+*Last updated: October 2025*
