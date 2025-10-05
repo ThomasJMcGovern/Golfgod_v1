@@ -42,8 +42,8 @@ const customStyles: StylesConfig<PlayerOption, false> = {
 };
 
 export default function PlayerSelect({ onSelectPlayer, selectedPlayerId }: PlayerSelectProps) {
-  // Load all players once - no search parameter needed
-  const players = useQuery(api.players.getAllPlayers, {});
+  // Load all players using getAll (returns all ~200 players, not limited to 100)
+  const players = useQuery(api.players.getAll, {});
   const [selectedOption, setSelectedOption] = useState<PlayerOption | null>(null);
 
   // Convert players to options for react-select
