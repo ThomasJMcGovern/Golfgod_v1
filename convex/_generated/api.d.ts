@@ -16,6 +16,7 @@ import type {
 import type * as auth from "../auth.js";
 import type * as courseStats from "../courseStats.js";
 import type * as dataManagement from "../dataManagement.js";
+import type * as databaseSchema from "../databaseSchema.js";
 import type * as dev_debug from "../dev/debug.js";
 import type * as dev_seed from "../dev/seed.js";
 import type * as http from "../http.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   courseStats: typeof courseStats;
   dataManagement: typeof dataManagement;
+  databaseSchema: typeof databaseSchema;
   "dev/debug": typeof dev_debug;
   "dev/seed": typeof dev_seed;
   http: typeof http;
