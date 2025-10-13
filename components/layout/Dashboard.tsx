@@ -1,28 +1,108 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import UserMenu from "@/components/layout/UserMenu";
 import { ModeToggle } from "@/components/mode-toggle";
+import SearchableSelect from "@/components/ui/searchable-select";
 import {
   User,
   Trophy,
   ClipboardList,
   Users,
-  Calendar,
   BarChart3,
   Zap,
-  ChevronLeft
+  ChevronLeft,
+  ExternalLink
 } from "lucide-react";
 
 export default function Dashboard() {
   const router = useRouter();
   const playerStats = useQuery(api.players.getPlayerCount, {});
+
+  // State for Card 1 (FIND PLAYER)
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string>("");
+
+  // State for Card 2 (CHOOSE TOUR)
+  const [selectedTour, setSelectedTour] = useState<string>("pga");
+  const [selectedSeason, setSelectedSeason] = useState<string>("2025-2026");
+  const [selectedTournament, setSelectedTournament] = useState<string>("");
+
+  // Helper function to extract year from season (e.g., "2024-2025" → 2025)
+  const getSeasonEndYear = (season: string) => {
+    return parseInt(season.split('-')[1]);
+  };
+
+  // Generate all available seasons dynamically (2015-2026)
+  const availableSeasons = (() => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2015;
+    const endYear = Math.max(currentYear + 1, 2026);
+    const seasons = [];
+
+    for (let year = endYear - 1; year >= startYear; year--) {
+      seasons.push({
+        value: `${year}-${year + 1}`,
+        label: `${year}/${year + 1}`
+      });
+    }
+
+    return seasons;
+  })();
+
+  // Fetch data for selects
+  const players = useQuery(api.players.getAll, {});
+  const tournaments = useQuery(api.tournaments.getTournamentsByYear, {
+    year: getSeasonEndYear(selectedSeason),
+    limit: 100
+  });
+
+  // Helper function to get flag emoji from country code
+  const getFlagEmoji = (countryCode: string): string => {
+    if (countryCode === "GB-ENG" || countryCode === "GB-SCT" ||
+        countryCode === "GB-NIR" || countryCode === "GB-WLS") {
+      return "🇬🇧";
+    }
+    if (!countryCode || countryCode.length !== 2) {
+      return "🏳️";
+    }
+    try {
+      const codePoints = countryCode
+        .toUpperCase()
+        .split("")
+        .map((char) => 127397 + char.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
+    } catch {
+      return "🏳️";
+    }
+  };
+
+  // Format players for SearchableSelect
+  const playerOptions = players?.map((player) => ({
+    value: player._id,
+    label: player.name,
+    subtitle: player.country,
+    flag: player.countryCode ? getFlagEmoji(player.countryCode) : undefined,
+  })) || [];
+
+  // Format tournaments for SearchableSelect
+  const tournamentOptions = tournaments?.map((tournament) => ({
+    value: tournament._id,
+    label: tournament.name,
+    subtitle: tournament.start_date ? `${tournament.start_date} ${tournament.year}` : `${tournament.year}`,
+  })) || [];
+
+  // Get current season year for schedule link
+  const getCurrentSeasonYear = () => {
+    return getSeasonEndYear(selectedSeason);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,77 +153,125 @@ export default function Dashboard() {
 
         {/* Main Options Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-          {/* Choose Player */}
-          <Card
-            className="cursor-pointer hover:shadow-lg transition-shadow active:scale-98"
-            onClick={() => router.push("/players")}
-          >
+          {/* Card 1: FIND PLAYER */}
+          <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="p-4 sm:p-6">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
                 <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <CardTitle className="text-base sm:text-lg">Choose Player</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                View player profiles, statistics, and tournament history
-              </CardDescription>
+              <CardTitle className="text-base sm:text-lg">FIND PLAYER</CardTitle>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6 pt-0">
-              <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
-                <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {playerStats === undefined ? (
-                  <Skeleton className="h-4 w-20" />
-                ) : (
-                  `${playerStats.count} Players`
-                )}
+            <CardContent className="p-4 sm:p-6 pt-0 space-y-3">
+              <div>
+                <SearchableSelect
+                  value={selectedPlayerId}
+                  onChange={(value) => {
+                    setSelectedPlayerId(value);
+                    if (value) {
+                      router.push(`/players?playerId=${value}`);
+                    }
+                  }}
+                  options={playerOptions}
+                  placeholder="Search for a player..."
+                  isLoading={!players}
+                  showFlags={true}
+                />
               </div>
+              <p className="text-xs text-muted-foreground">
+                Once the player is chosen and found then show the following options
+              </p>
             </CardContent>
           </Card>
 
-          {/* Choose Tournament */}
-          <Card
-            className="cursor-pointer hover:shadow-lg transition-shadow active:scale-98"
-            onClick={() => router.push("/tournaments/pga/2026")}
-          >
+          {/* Card 2: CHOOSE TOUR */}
+          <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="p-4 sm:p-6">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-purple-500 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
                 <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <CardTitle className="text-base sm:text-lg">Choose Tournament</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                Browse current, completed, and upcoming tournaments
-              </CardDescription>
+              <CardTitle className="text-base sm:text-lg">CHOOSE TOUR</CardTitle>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6 pt-0">
-              <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
-                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                600+ Events
+            <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
+              {/* Tour Selection */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Tour (currently only offers 1 tour)</Label>
+                <Select value={selectedTour} onValueChange={setSelectedTour}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select tour" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pga">PGA Tour</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Season Selection */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Choose SEASON (2015-2026)</Label>
+                <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select season" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {availableSeasons.map((season) => (
+                      <SelectItem key={season.value} value={season.value}>
+                        {season.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Tournament Search */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">FIND TOURNAMENT</Label>
+                <SearchableSelect
+                  value={selectedTournament}
+                  onChange={(value) => {
+                    setSelectedTournament(value);
+                    if (value) {
+                      // Navigate to specific tournament page when implemented
+                      console.log("Navigate to tournament:", value);
+                    }
+                  }}
+                  options={tournamentOptions}
+                  placeholder="Search for a tournament..."
+                  isLoading={!tournaments}
+                />
+              </div>
+
+              {/* Schedule Link */}
+              <div className="pt-2">
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-xs font-semibold text-green-600 hover:text-green-700 whitespace-normal text-left inline-flex items-start"
+                  onClick={() => router.push(`/tournaments/pga/${getCurrentSeasonYear()}`)}
+                >
+                  <span className="flex-1">OR CLICK HERE FOR FULL SCHEDULE - CURRENT SEASON!</span>
+                  <ExternalLink className="w-3 h-3 ml-1 flex-shrink-0 mt-0.5" />
+                </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Inside the Ropes */}
+          {/* Card 3: INSIDE THE ROPES */}
           <Card
-            className="cursor-pointer hover:shadow-lg transition-shadow relative active:scale-98"
+            className="cursor-pointer hover:shadow-lg transition-shadow active:scale-98"
             onClick={() => router.push("/inside-the-ropes")}
           >
-            <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-              <Badge variant="default" className="bg-green-600 hover:bg-green-700 text-xs px-2 py-0.5">
-                NEW
-              </Badge>
-            </div>
             <CardHeader className="p-4 sm:p-6">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-orange-500 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
                 <ClipboardList className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <CardTitle className="text-base sm:text-lg">Inside the Ropes</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                Course-specific player stats and betting insights
-              </CardDescription>
+              <CardTitle className="text-base sm:text-lg">INSIDE THE ROPES</CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 pt-0">
+              <CardDescription className="text-xs sm:text-sm mb-3">
+                Course-specific player stats and betting insights
+              </CardDescription>
               <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Per-Course Analytics
+                Advanced Analytics
               </div>
             </CardContent>
           </Card>
