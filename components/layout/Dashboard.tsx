@@ -118,7 +118,7 @@ export default function Dashboard() {
                 size="icon"
                 onClick={async () => {
                   await signOut();
-                  router.push("/signin");
+                  router.push("/");
                 }}
                 className="mr-3"
               >

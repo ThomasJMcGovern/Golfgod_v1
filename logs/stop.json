@@ -190,5 +190,21 @@
     "permission_mode": "acceptEdits",
     "hook_event_name": "Stop",
     "stop_hook_active": false
+  },
+  {
+    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "acceptEdits",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "acceptEdits",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
   }
 ]
