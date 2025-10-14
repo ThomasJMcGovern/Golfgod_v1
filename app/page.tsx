@@ -2,7 +2,8 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
-import { Authenticated, Unauthenticated } from "convex/react";
+import { Authenticated, Unauthenticated, useConvexAuth } from "convex/react";
+import { useRouter } from "next/navigation";
 import Dashboard from "@/components/layout/Dashboard";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -28,11 +29,13 @@ import { motion, AnimatePresence } from "motion/react";
 
 export default function Home() {
   const { signIn } = useAuthActions();
+  const { isLoading } = useConvexAuth();
   const [isSignInMode, setIsSignInMode] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +57,17 @@ export default function Home() {
   const scrollToHowItWorks = () => {
     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-secondary/20">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -386,10 +400,7 @@ export default function Home() {
                 disabled={loading}
                 onClick={() => {
                   setLoading(true);
-                  signIn("google").catch((error) => {
-                    console.error("Google auth error:", error);
-                    setLoading(false);
-                  });
+                  void signIn("google");
                 }}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
