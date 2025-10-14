@@ -114,7 +114,7 @@ export default function Dashboard() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => router.push("/")}
+                onClick={() => router.back()}
                 className="mr-3"
               >
                 <ChevronLeft className="h-4 w-4" />

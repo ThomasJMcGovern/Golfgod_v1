@@ -2,6 +2,7 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { User, Settings, LogOut, HelpCircle, FileText } from "lucide-react";
+import { User, Settings, LogOut, HelpCircle, FileText, Loader2 } from "lucide-react";
 
 interface UserMenuProps {
   userEmail?: string;
@@ -23,10 +24,17 @@ interface UserMenuProps {
 export default function UserMenu({ userEmail, userName, avatarUrl }: UserMenuProps) {
   const { signOut } = useAuthActions();
   const router = useRouter();
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
+    setIsSigningOut(true);
+    try {
+      await signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      setIsSigningOut(false);
+    }
   };
 
   // Get initials for avatar fallback
@@ -101,9 +109,14 @@ export default function UserMenu({ userEmail, userName, avatarUrl }: UserMenuPro
         <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-600"
           onClick={handleSignOut}
+          disabled={isSigningOut}
         >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Sign out</span>
+          {isSigningOut ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <LogOut className="mr-2 h-4 w-4" />
+          )}
+          <span>{isSigningOut ? "Signing out..." : "Sign out"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
