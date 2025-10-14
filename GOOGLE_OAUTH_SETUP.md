@@ -151,19 +151,32 @@ npx convex deploy
 
 ## Production Deployment
 
-### Update Google Console for Production
+### Vercel Production Setup
+
+**Important**: The `SITE_URL` environment variable must match your production domain.
+
+#### 1. Update Convex Environment Variable (Dashboard)
+1. Go to [Convex Dashboard](https://dashboard.convex.dev)
+2. Select your project
+3. Navigate to **Settings** → **Environment Variables**
+4. Update `SITE_URL` to your Vercel domain: `https://golfgod-v1.vercel.app`
+5. Click **Save**
+
+**Why**: Convex uses `SITE_URL` to redirect users after OAuth. If this is set to `http://localhost:3004`, users will be redirected to localhost instead of your production site.
+
+#### 2. Update Google Console for Production
 1. Go to Google Cloud Console → Credentials
 2. Edit your OAuth client
 3. Add production URLs:
-   - **Authorized JavaScript origins**: `https://your-domain.com`
+   - **Authorized JavaScript origins**: `https://golfgod-v1.vercel.app`
    - **Authorized redirect URIs**:
-     - `https://your-domain.com/api/auth/callback/google`
-     - `https://your-deployment.convex.site/oauth/google/callback`
+     - `https://golfgod-v1.vercel.app/api/auth/callback/google`
+     - `https://brainy-tiger-452.convex.site/api/auth/callback/google`
 
-### Update Convex Environment for Production
+#### 3. Alternative: Set via CLI (if preferred)
 ```bash
-# Switch to production environment
-npx convex env set SITE_URL "https://your-domain.com" --prod
+# Set for production deployment
+npx convex env set SITE_URL "https://golfgod-v1.vercel.app" --prod
 ```
 
 ---
