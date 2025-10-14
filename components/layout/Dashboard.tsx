@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,12 +20,13 @@ import {
   Users,
   BarChart3,
   Zap,
-  ChevronLeft,
+  LogOut,
   ExternalLink
 } from "lucide-react";
 
 export default function Dashboard() {
   const router = useRouter();
+  const { signOut } = useAuthActions();
   const playerStats = useQuery(api.players.getPlayerCount, {});
 
   // State for Card 1 (FIND PLAYER)
@@ -114,10 +116,13 @@ export default function Dashboard() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => router.back()}
+                onClick={async () => {
+                  await signOut();
+                  router.push("/signin");
+                }}
                 className="mr-3"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <LogOut className="h-4 w-4" />
               </Button>
               <div>
                 <h1 className="text-2xl font-bold">GolfGod</h1>
