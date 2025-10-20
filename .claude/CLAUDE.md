@@ -1,6 +1,6 @@
 # GolfGod - Convex Database Rules
 
-**Tech Stack**: Next.js 15 + React 19 + TypeScript + Convex (reactive database) + Tailwind CSS
+**Tech Stack**: Next.js 15 + React 19 + TypeScript + Convex (reactive database) + Tailwind CSS + Bun
 
 **Convex Free Tier Limits**:
 - 1 GB bandwidth/month

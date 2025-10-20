@@ -43,7 +43,7 @@ Deep-dive analytics revealing how players perform at specific golf courses:
 bun install
 
 # 2. Set up Convex
-bunx convex dev
+npx convex dev
 
 # 3. Start development server
 bun run dev
@@ -314,8 +314,8 @@ bun run dev          # Start Next.js dev server (localhost:3000)
 bun run build        # Build for production
 bun run start        # Start production server
 bun run lint         # Run ESLint
-bunx convex dev      # Start Convex development backend
-bunx convex deploy   # Deploy Convex backend to production
+npx convex dev       # Start Convex development backend
+npx convex deploy    # Deploy Convex backend to production
 ```
 
 ### Environment Variables
