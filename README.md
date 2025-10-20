@@ -38,6 +38,18 @@ Deep-dive analytics revealing how players perform at specific golf courses:
 
 ## 🏁 Quick Start
 
+### Option 1: Automated Script (Recommended)
+
+```bash
+# 1. Install dependencies
+bun install
+
+# 2. Start all services with one command
+./scripts/start.sh
+```
+
+### Option 2: Manual Setup
+
 ```bash
 # 1. Install dependencies
 bun install
@@ -310,6 +322,7 @@ bun run dev
 ### Available Scripts
 
 ```bash
+./scripts/start.sh   # Start all services (Convex + Next.js)
 bun run dev          # Start Next.js dev server (localhost:3000)
 bun run build        # Build for production
 bun run start        # Start production server

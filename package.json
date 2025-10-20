@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "bun run --parallel dev:frontend dev:backend",
-    "dev:frontend": "bun --bun next dev",
+    "dev:frontend": "bun next dev",
     "dev:backend": "npx convex dev",
     "predev": "npx convex dev --until-success && npx convex dev --once --run-sh \"node setup.mjs --once\" && npx convex dashboard",
-    "build": "bun --bun next build",
-    "start": "bun --bun next start",
-    "lint": "bun --bun next lint"
+    "build": "bun next build",
+    "start": "bun next start",
+    "lint": "bun next lint"
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.81",
@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "convex": "^1.27.0",
+    "convex": "^1.28.0",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.24",
     "next": "15.2.3",

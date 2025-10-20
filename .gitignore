@@ -48,3 +48,9 @@ next-env.d.ts
 
 # convex dev files
 /convex/dev/
+
+# logs (Claude Code hooks)
+/logs/*.json
+
+# archived scripts
+/scripts_old/
