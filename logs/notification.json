@@ -1,149 +1,100 @@
 [
   {
-    "session_id": "dfb19dd8-b0d9-48e4-a13f-ee9e119f5569",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/dfb19dd8-b0d9-48e4-a13f-ee9e119f5569.jsonl",
+    "session_id": "0f43ed05-150d-4611-9e5e-1a8543056996",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/0f43ed05-150d-4611-9e5e-1a8543056996.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "0f43ed05-150d-4611-9e5e-1a8543056996",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/0f43ed05-150d-4611-9e5e-1a8543056996.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude is waiting for your input"
   },
   {
-    "session_id": "9159dc6d-9495-4c89-9453-ac9af2f4ee8e",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/9159dc6d-9495-4c89-9453-ac9af2f4ee8e.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude is waiting for your input"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude Code needs your approval for the plan"
   },
   {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude Code needs your approval for the plan"
   },
   {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude Code needs your approval for the plan"
   },
   {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
+    "session_id": "fb36f7a7-925d-4642-b220-ec2be3569883",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/fb36f7a7-925d-4642-b220-ec2be3569883.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude Code needs your approval for the plan"
   },
   {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
+    "session_id": "fb36f7a7-925d-4642-b220-ec2be3569883",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/fb36f7a7-925d-4642-b220-ec2be3569883.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude needs your permission to use Bash"
   },
   {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude Code needs your approval for the plan"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude Code needs your approval for the plan"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude Code needs your approval for the plan"
-  },
-  {
-    "session_id": "bfee594e-6f99-4ba7-9645-d3782339b6d3",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/bfee594e-6f99-4ba7-9645-d3782339b6d3.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
-    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
-    "hook_event_name": "Notification",
-    "message": "Claude needs your permission to use Bash"
-  },
-  {
-    "session_id": "e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b",
-    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/e8a2cccb-39c7-41ba-bcad-f212fa2f5a9b.jsonl",
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
     "cwd": "/Users/tjmcgovern/golfgod_x_convex",
     "hook_event_name": "Notification",
     "message": "Claude needs your permission to use Fetch"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude Code needs your approval for the plan"
   }
 ]

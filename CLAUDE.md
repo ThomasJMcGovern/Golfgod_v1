@@ -99,7 +99,7 @@ Need tournament schedule?         → pgaTournaments
 
 ```bash
 # Development
-npm run dev              # Start dev server (localhost:3000)
+bun run dev              # Start dev server (localhost:3000)
 npx convex dev           # Start Convex backend
 
 # Convex Operations

@@ -6,8 +6,9 @@ Welcome to the comprehensive documentation for GolfGod - a PGA Tour analytics pl
 
 ### Essential Guides
 - **[Main README](../README.md)** - Project overview, quick start, tech stack
-- **[Inside the Ropes](./INSIDE_THE_ROPES.md)** - Course-specific player analytics methodology
-- **[Database Schema](./DATABASE_SCHEMA.md)** - Complete schema reference (9 tables)
+- **[Codebase Guide](./CODEBASE_GUIDE.md)** ⭐ **NEW** - Comprehensive codebase understanding guide
+- **[Architecture Visual](./ARCHITECTURE_VISUAL.md)** ⭐ **NEW** - Visual diagrams and system architecture
+- **[Database Schema Map](./database/schema-map.md)** - Complete schema reference (9 tables)
 - **[Development Guide](./DEVELOPMENT.md)** - Local setup, debugging, common tasks
 
 ### API Reference

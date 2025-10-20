@@ -24,11 +24,13 @@ CONVEX_DEPLOY_KEY=[your-deploy-key]
 3. Import from GitHub repository: `ThomasJMcGovern/Golfgod_v1`
 
 ### 2. Configure Build Settings
-Vercel should auto-detect Next.js, but verify:
+Vercel should auto-detect Next.js and Bun (via `vercel.json`), but verify:
 - **Framework Preset**: Next.js
-- **Build Command**: `npm run build`
+- **Build Command**: `bun run build` (auto-configured via vercel.json)
 - **Output Directory**: `.next`
-- **Install Command**: `npm install`
+- **Install Command**: `bun install` (auto-configured via vercel.json)
+
+**Note**: Project includes `vercel.json` with Bun configuration - Vercel will automatically use Bun for installs and builds.
 
 ### 3. Add Environment Variables
 In Vercel dashboard → Settings → Environment Variables:
@@ -119,13 +121,21 @@ Consider different settings for production:
 If you have Vercel CLI installed:
 ```bash
 # Install Vercel CLI if needed
-npm i -g vercel
+bun install -g vercel
 
 # Deploy
 vercel
 
 # Follow prompts and add env vars when asked
 ```
+
+## Bun Migration Notes
+
+This project uses Bun for faster dependency installation and builds:
+- `bun.lockb` is the Bun lockfile (committed to git)
+- `vercel.json` configures Vercel to use Bun automatically
+- All `npm` commands replaced with `bun` equivalents
+- Convex CLI still uses `npx` (cross-compatible)
 
 ## Your Specific Setup Notes
 
