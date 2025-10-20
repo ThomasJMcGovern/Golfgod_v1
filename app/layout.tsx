@@ -22,7 +22,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export const dynamic = 'force-dynamic';
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/layout/UserMenu";
 import { ModeToggle } from "@/components/mode-toggle";
+
+export const dynamic = 'force-dynamic';
+
 import {
   ChevronLeft,
   Target,

@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
 import { ModeToggle } from "@/components/mode-toggle";
+
+export const dynamic = 'force-dynamic';
 import {
   Select,
   SelectContent,

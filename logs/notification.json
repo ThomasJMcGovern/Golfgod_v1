@@ -1,1 +1,51 @@
-[]
+[
+  {
+    "session_id": "0f43ed05-150d-4611-9e5e-1a8543056996",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/0f43ed05-150d-4611-9e5e-1a8543056996.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "0f43ed05-150d-4611-9e5e-1a8543056996",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/0f43ed05-150d-4611-9e5e-1a8543056996.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude is waiting for your input"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude Code needs your approval for the plan"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude Code needs your approval for the plan"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "c1d58423-c2b3-4cc4-9c58-b024c97f2b2f",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/c1d58423-c2b3-4cc4-9c58-b024c97f2b2f.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  }
+]

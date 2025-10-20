@@ -19,6 +19,8 @@ import {
 import FeatureCard from "@/components/landing/FeatureCard";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const router = useRouter();
   const { signIn, signOut } = useAuthActions();
