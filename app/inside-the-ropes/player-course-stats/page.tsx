@@ -15,8 +15,6 @@ import UserMenu from "@/components/layout/UserMenu";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Trophy, TrendingUp, TrendingDown, Target, Wind, Calendar, DollarSign, Award, ChevronLeft } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
-
 export default function InsideTheRopes() {
   const router = useRouter();
   const [selectedCourse, setSelectedCourse] = useState<string>("");

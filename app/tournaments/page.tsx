@@ -6,8 +6,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const dynamic = 'force-dynamic';
-
 export default function TournamentsPage() {
   const router = useRouter();
   const availableYears = useQuery(api.tournaments.getAvailableYears, {});
