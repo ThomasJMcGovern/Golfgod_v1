@@ -97,10 +97,10 @@ Based on [ai-town issue #227](https://github.com/a16z-infra/ai-town/issues/227):
 ## Benefits Retained
 
 Even without `--bun` runtime flag, we still get:
-- � **10-25x faster installs** (Bun package manager)
-- =� **Faster script execution** (Bun task runner)
-- <� **Parallel script running** (bun run --parallel)
-- =� **Smaller lockfile** (bun.lock vs package-lock.json)
+- � **10-25x faster installs** (Bun package manager)
+- =� **Faster script execution** (Bun task runner)
+- <� **Parallel script running** (bun run --parallel)
+- =� **Smaller lockfile** (bun.lock vs package-lock.json)
 
 ## Testing
 
@@ -132,3 +132,77 @@ npx convex dev
 
 **Last Updated**: January 2025
 **Migration Status**:  Complete with compatibility fix
+
+## Additional Issues & Resolutions (Post --bun Fix)
+
+### Issue 3: @convex-dev/auth Next.js Incompatibility
+
+After resolving the `--bun` flag issue and AWS outage, encountered persistent middleware errors during E2E testing:
+
+**Error**:
+```
+Error: `headers` was called outside a request scope
+at getRequestCookies (middleware)/./node_modules/@convex-dev/auth/dist/nextjs/server/cookies.js:16:40
+at handleAuthenticationInRequest (middleware)/./node_modules/@convex-dev/auth/dist/nextjs/server/request.js:23:51
+```
+
+**Root Cause**: @convex-dev/auth (v0.0.90) middleware implementation incompatible with Next.js async headers() API in **both Next.js 14 and 15**.
+
+**Resolution Timeline**:
+1. ❌ Upgraded @convex-dev/auth 0.0.89 → 0.0.90 (still broken in Next.js 15)
+2. ❌ Attempted layout.tsx async fix (wrong - error is in middleware package)
+3. ✅ Downgraded Next.js 15.2.3 → 14.2.33 (required for peer deps)
+4. ✅ Downgraded React 19 → 18.3.1 (Next.js 14 requires React 18)
+5. ✅ Converted next.config.ts → next.config.mjs (Next.js 14 doesn't support .ts config)
+6. ✅ Changed Geist fonts → Inter (Next.js 14 doesn't include Geist)
+7. ⚠️ Temporarily disabled middleware.ts (app works, but no auth middleware active)
+
+**Current Status**:
+- ✅ Frontend loads successfully (HTTP 200)
+- ✅ Convex backend running
+- ✅ Bun migration complete
+- ⚠️ **Authentication middleware disabled** - app has no route protection
+
+**Temporary Workaround**: Middleware disabled by renaming to `middleware.ts.backup`
+
+**Permanent Solution Options**:
+1. Wait for @convex-dev/auth update with Next.js 14/15 async context support
+2. Implement custom middleware using standard Next.js patterns
+3. Use client-side only authentication (not recommended for production)
+
+**Package Version Summary**:
+```json
+{
+  "next": "14.2.33",               // Downgraded from 15.2.3
+  "react": "18.3.1",               // Downgraded from 19.0.0
+  "react-dom": "18.3.1",           // Downgraded from 19.0.0
+  "@convex-dev/auth": "0.0.90",    // Latest version (still incompatible)
+  "@types/react": "18.3.26",       // Downgraded from 19
+  "@types/react-dom": "18.3.7"     // Downgraded from 19
+}
+```
+
+**Files Modified**:
+- `package.json` - Updated React/Next.js versions
+- `next.config.ts` → `next.config.mjs` - Converted to .mjs format
+- `app/layout.tsx` - Changed from Geist to Inter fonts, removed async
+- `middleware.ts` → `middleware.ts.backup` - Temporarily disabled
+
+**E2E Testing Protocol** (Critical - Must Test in Browser):
+```bash
+# 1. Kill all services
+pkill -9 -f "next dev" && pkill -9 -f "convex dev"
+
+# 2. Start services
+./scripts/start.sh
+
+# 3. HTTP test
+curl -s -o /dev/null -w "HTTP: %{http_code}\n" http://localhost:3000/
+# Expected: HTTP: 200
+
+# 4. Visual test (REQUIRED)
+open http://localhost:3000
+# Expected: Landing page loads without errors in browser
+```
+
+**Lesson Learned**: Always E2E test by opening localhost in browser, not just checking terminal/curl output.
