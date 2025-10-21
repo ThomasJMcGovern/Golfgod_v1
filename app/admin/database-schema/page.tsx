@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, Database, Info } from "lucide-react";
 import SchemaCanvas from "@/components/admin/database-schema/SchemaCanvas";
 import TableDetailsPanel from "@/components/admin/database-schema/TableDetailsPanel";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import type { SchemaTable } from "@/lib/schema-parser";
 import { parseSchema } from "@/lib/schema-parser";
 
@@ -17,7 +18,8 @@ export default function DatabaseSchemaPage() {
   const { tables } = parseSchema();
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <ProtectedRoute>
+      <div className="h-screen flex flex-col bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
         <div className="px-6 py-4">
@@ -91,5 +93,6 @@ export default function DatabaseSchemaPage() {
       {/* Details Panel (slides in from right) */}
       <TableDetailsPanel table={selectedTable} onClose={() => setSelectedTable(null)} />
     </div>
+    </ProtectedRoute>
   );
 }

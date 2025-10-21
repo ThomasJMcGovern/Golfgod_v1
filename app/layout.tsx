@@ -22,17 +22,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ConvexAuthNextjsServerProvider>
+    <ConvexAuthNextjsServerProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -41,8 +41,8 @@ export default async function RootLayout({
           >
             <ConvexClientProvider>{children}</ConvexClientProvider>
           </ThemeProvider>
-        </ConvexAuthNextjsServerProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }
