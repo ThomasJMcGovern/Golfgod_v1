@@ -6,8 +6,10 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Authenticated, Unauthenticated } from "convex/react";
 import PlayerSelect from "@/components/player/PlayerSelect";
 import PlayerBio from "@/components/player/PlayerBio";
+import PlayerKnowledgeHub from "@/components/player/PlayerKnowledgeHub";
 import PlayerRankings from "@/components/player/PlayerRankings";
 import PlayerStats from "@/components/player/PlayerStats";
+import CategoryExplorer from "@/components/player/CategoryExplorer";
 import UserMenu from "@/components/layout/UserMenu";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function PlayersPage() {
   const router = useRouter();
@@ -63,6 +73,7 @@ export default function PlayersPage() {
                     variant="ghost"
                     size="icon"
                     onClick={() => router.push("/")}
+                    className="hidden lg:flex"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
@@ -131,6 +142,23 @@ export default function PlayersPage() {
             </div>
           </header>
 
+          {/* Breadcrumbs - Desktop Only */}
+          <div className="hidden sm:block border-t">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Players</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+          </div>
+
           {/* Main Content */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
             <div className="flex gap-4 lg:gap-6">
@@ -162,9 +190,13 @@ export default function PlayersPage() {
 
               {/* Main Content Area */}
               <div className="flex-1 w-full">
+                {/* Category Explorer - only visible when no player selected */}
+                {!selectedPlayerId && <CategoryExplorer />}
+
                 {selectedPlayerId ? (
                   <div className="space-y-6">
                     <PlayerBio playerId={selectedPlayerId} />
+                    <PlayerKnowledgeHub playerId={selectedPlayerId} />
                     <PlayerStats playerId={selectedPlayerId} />
                   </div>
                 ) : (
