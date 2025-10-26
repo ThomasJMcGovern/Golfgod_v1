@@ -9,15 +9,24 @@
 ```
 Players (200) → Tournament Results (20K+) → Round Stats (future)
    ↓                    ↓                        ↓
-   └─────────→ Player Course Stats (aggregated career data)
-                        ↑
-Courses (54) ──────────┘
+   ├─────────→ Player Course Stats (aggregated career data)
+   │                    ↑
+   │         Courses (54) ──────────┘
+   │
+   └─────────→ Player Knowledge Hub (6 tables):
+               - playerFamily (~200)
+               - playerFamilyHistory (~400)
+               - playerProfessional (~200)
+               - playerNearbyCourses (~800)
+               - playerInjuries (~300)
+               - playerIntangibles (~600)
 ```
 
 **Key Principle**: Data exists at 3 levels of granularity
 1. **Raw** → `tournamentResults` (single tournament, aggregate score)
 2. **Detailed** → `roundStats` (individual rounds with tee times)
 3. **Aggregated** → `playerCourseStats` (career stats at course)
+4. **Knowledge** → 6 player knowledge tables (biographical, career, injuries, intangibles)
 
 ---
 
@@ -269,6 +278,230 @@ leaderboard.sort((a, b) => {
 
 ---
 
+## 🎓 Player Knowledge Hub Tables
+
+### Overview
+Six tables storing comprehensive player biographical, career, and performance data. All tables are **small** (<1K records each), making them **safe for `.collect()` with indexes**.
+
+### **playerFamily** - Personal Family Information
+```typescript
+{
+  playerId: Id<"players">,
+  maritalStatus: "Single" | "Married" | "Divorced" | "Widowed",
+  spouseName?: string,
+  spouseMarriedSince?: number,  // Year
+  children?: Array<{ name: string, birthYear: number }>,
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player` on `playerId`
+**Table Size**: ~200 records (one per player, optional)
+**Safe to .collect()**: ✅ Yes, with index
+
+**Query Patterns**:
+```typescript
+// Get player's family info
+const family = await ctx.db
+  .query("playerFamily")
+  .withIndex("by_player", (q) => q.eq("playerId", playerId))
+  .first();
+```
+
+### **playerFamilyHistory** - Family Golf Background
+```typescript
+{
+  playerId: Id<"players">,
+  memberName: string,
+  relationship: string,  // "Father", "Mother", "Brother", etc.
+  golfLevel: "College" | "Professional" | "Amateur",
+  achievements: string,
+  yearsActive?: string,  // e.g., "1985-1995"
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player`, `by_golf_level`
+**Table Size**: ~400 records (2 avg per player)
+**Safe to .collect()**: ✅ Yes, bounded by playerId
+
+**Query Patterns**:
+```typescript
+// Get all family golf history for player
+const history = await ctx.db
+  .query("playerFamilyHistory")
+  .withIndex("by_player", (q) => q.eq("playerId", playerId))
+  .collect();  // Safe: ~2-5 records per player
+```
+
+### **playerProfessional** - Professional Career History
+```typescript
+{
+  playerId: Id<"players">,
+  currentStatus: "PGA Tour" | "Korn Ferry" | "DP World Tour" | "LIV Golf" | "Retired",
+  tourCard?: number,         // Year obtained PGA Tour card
+  rookieYear?: number,
+  careerEarnings?: number,
+  majorWins?: number,
+  totalWins?: number,
+  milestones: Array<{ year: number, achievement: string }>,
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player`, `by_status`
+**Table Size**: ~200 records (one per player)
+**Safe to .collect()**: ✅ Yes, with index
+
+**Query Patterns**:
+```typescript
+// Get professional career for player
+const pro = await ctx.db
+  .query("playerProfessional")
+  .withIndex("by_player", (q) => q.eq("playerId", playerId))
+  .first();
+
+// Get all active PGA Tour players
+const active = await ctx.db
+  .query("playerProfessional")
+  .withIndex("by_status", (q) => q.eq("currentStatus", "PGA Tour"))
+  .collect();  // Safe: ~200 records, indexed
+```
+
+### **playerNearbyCourses** - Hometown & University Courses
+```typescript
+{
+  playerId: Id<"players">,
+  courseId: Id<"courses">,
+  courseType: "Hometown" | "University",
+  distanceMiles: number,           // Max 180 miles
+  referenceLocation: string,       // City, State
+  eventsPlayed?: number,
+  avgScore?: number,
+  bestFinish?: string,             // e.g., "1", "T-3"
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player`, `by_player_type`, `by_course`
+**Table Size**: ~800 records (4 avg per player)
+**Safe to .collect()**: ✅ Yes, bounded by playerId
+
+**Query Patterns**:
+```typescript
+// Get hometown courses for player
+const hometown = await ctx.db
+  .query("playerNearbyCourses")
+  .withIndex("by_player_type", (q) =>
+    q.eq("playerId", playerId).eq("courseType", "Hometown")
+  )
+  .collect();  // Safe: ~2-4 records per player
+
+// Get university courses for player
+const university = await ctx.db
+  .query("playerNearbyCourses")
+  .withIndex("by_player_type", (q) =>
+    q.eq("playerId", playerId).eq("courseType", "University")
+  )
+  .collect();  // Safe: ~2-4 records per player
+```
+
+### **playerInjuries** - Injury History Tracking
+```typescript
+{
+  playerId: Id<"players">,
+  injuryType: string,              // e.g., "Back strain", "Wrist injury"
+  affectedArea: string,            // Body part
+  injuryDate: string,              // ISO date (YYYY-MM-DD)
+  status: "Active" | "Recovering" | "Recovered",
+  recoveryTimeline?: string,       // e.g., "4-6 weeks"
+  tournamentsMissed?: number,
+  impact?: string,
+  returnDate?: string,             // ISO date
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player`, `by_status`, `by_player_date`
+**Table Size**: ~300 records (1.5 avg per player)
+**Safe to .collect()**: ✅ Yes, bounded by playerId
+
+**Query Patterns**:
+```typescript
+// Get all injuries for player (chronological)
+const injuries = await ctx.db
+  .query("playerInjuries")
+  .withIndex("by_player_date", (q) => q.eq("playerId", playerId))
+  .collect();  // Safe: ~1-3 records per player
+// Sort: descending by injuryDate
+
+// Get active injuries only
+const active = injuries.filter(i => i.status === "Active" || i.status === "Recovering");
+```
+
+### **playerIntangibles** - Performance Factors
+```typescript
+{
+  playerId: Id<"players">,
+  category: "Weather" | "Course Type" | "Pressure" | "Tournament Size" | "Field Strength",
+  subcategory?: string,            // e.g., "Wind", "Rain" for Weather
+  description: string,
+  performanceRating: "Outstanding" | "Excellent" | "Strong" | "Average" | "Weak" | "Poor",
+  supportingStats?: string,        // Statistical evidence
+  confidence?: "High" | "Medium" | "Low",
+  lastUpdated: number
+}
+```
+
+**Indexes**: `by_player`, `by_category`, `by_player_category`
+**Table Size**: ~600 records (3 avg per player)
+**Safe to .collect()**: ✅ Yes, bounded by playerId
+
+**Query Patterns**:
+```typescript
+// Get all intangibles for player
+const intangibles = await ctx.db
+  .query("playerIntangibles")
+  .withIndex("by_player", (q) => q.eq("playerId", playerId))
+  .collect();  // Safe: ~3-6 records per player
+
+// Get weather preferences specifically
+const weather = await ctx.db
+  .query("playerIntangibles")
+  .withIndex("by_player_category", (q) =>
+    q.eq("playerId", playerId).eq("category", "Weather")
+  )
+  .collect();  // Safe: ~1-2 records
+```
+
+### Knowledge Hub Query Decision Tree
+```
+Need player knowledge data?
+
+├─ Family info (spouse, children)?
+│  └─→ playerFamily.first()
+│
+├─ Family golf background?
+│  └─→ playerFamilyHistory.collect() [bounded by playerId]
+│
+├─ Professional career timeline?
+│  └─→ playerProfessional.first()
+│
+├─ Hometown courses?
+│  └─→ playerNearbyCourses.collect() [filter: courseType="Hometown"]
+│
+├─ University courses?
+│  └─→ playerNearbyCourses.collect() [filter: courseType="University"]
+│
+├─ Injury history?
+│  └─→ playerInjuries.collect() [filter by status if needed]
+│
+└─ Performance intangibles?
+   └─→ playerIntangibles.collect() [filter by category if needed]
+```
+
+---
+
 ## 📊 Data Granularity Guide
 
 **"Which table should I query?"** - Decision tree:
@@ -314,6 +547,13 @@ START: What am I looking for?
 | `tournamentCourses` | `courseId` | `courses` | many-to-one |
 | `userFollows` | `playerId` | `players` | many-to-one |
 | `userFollows` | `userId` | `users` (auth) | many-to-one |
+| `playerFamily` | `playerId` | `players` | one-to-one |
+| `playerFamilyHistory` | `playerId` | `players` | many-to-one |
+| `playerProfessional` | `playerId` | `players` | one-to-one |
+| `playerNearbyCourses` | `playerId` | `players` | many-to-one |
+| `playerNearbyCourses` | `courseId` | `courses` | many-to-one |
+| `playerInjuries` | `playerId` | `players` | many-to-one |
+| `playerIntangibles` | `playerId` | `players` | many-to-one |
 
 ---
 
@@ -509,6 +749,13 @@ Safe to use `.collect()`:
 - `courses` (54 records)
 - `by_player` queries on `tournamentResults` (~200-500 per player)
 - `by_player_course` queries on `roundStats` (bounded by player + course)
+- **Player Knowledge Hub tables** (all <1K records, bounded by playerId):
+  - `playerFamily` (~200 records, one per player)
+  - `playerFamilyHistory` (~400 records, ~2 per player)
+  - `playerProfessional` (~200 records, one per player)
+  - `playerNearbyCourses` (~800 records, ~4 per player)
+  - `playerInjuries` (~300 records, ~1.5 per player)
+  - `playerIntangibles` (~600 records, ~3 per player)
 
 NOT safe to use `.collect()`:
 - All `tournamentResults` (20K+ records)
@@ -518,9 +765,20 @@ NOT safe to use `.collect()`:
 
 ## 📅 Schema Version History
 
-**Current Version**: 1.0 (January 2025)
+**Current Version**: 1.1 (January 2025)
 
-**Recent Changes**:
+**Recent Changes (v1.1)**:
+- ✅ Added **Player Knowledge Hub** - 6 new tables for comprehensive player data:
+  - `playerFamily` - Personal family information (marital status, spouse, children)
+  - `playerFamilyHistory` - Family members with golf backgrounds
+  - `playerProfessional` - Professional career timeline and achievements
+  - `playerNearbyCourses` - Hometown and university courses within 180 miles
+  - `playerInjuries` - Injury history tracking with recovery status
+  - `playerIntangibles` - Performance factors (weather, course type, pressure)
+- ✅ Added 12 new indexes optimized for player knowledge queries
+- ✅ All new tables are small (<1K records) - safe for `.collect()` with indexes
+
+**Previous Changes (v1.0)**:
 - Added `roundStats` table (schema defined, data pending)
 - Added `courses`, `tournamentCourses`, `playerCourseStats` tables
 - Added `by_player_course` composite indexes

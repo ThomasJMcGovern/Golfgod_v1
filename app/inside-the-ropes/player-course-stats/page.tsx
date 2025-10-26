@@ -5,15 +5,23 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import SearchableSelect from "@/components/ui/searchable-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import UserMenu from "@/components/layout/UserMenu";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Trophy, TrendingUp, TrendingDown, Target, Wind, Calendar, DollarSign, Award, ChevronLeft } from "lucide-react";
+import AppHeader from "@/components/layout/AppHeader";
+import MainNavigation from "@/components/layout/MainNavigation";
+import { Trophy, TrendingUp, TrendingDown, Target } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function InsideTheRopes() {
   const router = useRouter();
@@ -121,40 +129,32 @@ export default function InsideTheRopes() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with Back Button */}
-      <header className="bg-card border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push("/")}
-                className="mr-3"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <div>
-                <h1 className="text-lg sm:text-xl font-semibold">Inside the Ropes</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
-                  Course-specific player performance and betting insights
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Button
-                className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
-                onClick={() => router.push("/")}
-              >
-                <span className="hidden sm:inline">PGA TOUR</span>
-                <span className="sm:hidden">PGA</span>
-              </Button>
-              <ModeToggle />
-              <UserMenu />
-            </div>
-          </div>
+      {/* Header */}
+      <AppHeader title="Player Stats Per Course" subtitle="Course-specific performance analysis" />
+
+      {/* Main Navigation */}
+      <MainNavigation />
+
+      {/* Breadcrumbs - Desktop Only */}
+      <div className="hidden sm:block border-t">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/inside-the-ropes">Inside the Ropes</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Player Course Stats</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">

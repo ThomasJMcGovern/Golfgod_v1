@@ -22,9 +22,17 @@ Quick reference for AI-assisted development.
 ### Entity Flow
 ```
 players (200)
-  └─> tournamentResults (20K+) [playerId]
-        ├─> roundStats (future: 80K+) [tournamentResultId]
-        └─> has: scores[], position, earnings
+  ├─> tournamentResults (20K+) [playerId]
+  │     ├─> roundStats (future: 80K+) [tournamentResultId]
+  │     └─> has: scores[], position, earnings
+  │
+  └─> Player Knowledge Hub (6 tables):
+        ├─> playerFamily (~200) - marital status, spouse, children
+        ├─> playerFamilyHistory (~400) - family golf backgrounds
+        ├─> playerProfessional (~200) - career timeline, achievements
+        ├─> playerNearbyCourses (~800) - hometown/university courses
+        ├─> playerInjuries (~300) - injury history tracking
+        └─> playerIntangibles (~600) - weather, course type, pressure
 
 courses (54)
   └─> playerCourseStats (2.7K) [courseId]
@@ -33,17 +41,30 @@ courses (54)
 
 ### Query Decision Tree
 ```
-Need career stats at course?     → playerCourseStats
-Need tournament history?          → tournamentResults
-Need round-by-round details?      → roundStats
-Need AM/PM or Thu-Fri/Sat-Sun?    → roundStats (only table with teeTime)
-Need tournament schedule?         → pgaTournaments
+Need career stats at course?        → playerCourseStats
+Need tournament history?             → tournamentResults
+Need round-by-round details?         → roundStats
+Need AM/PM or Thu-Fri/Sat-Sun?       → roundStats (only table with teeTime)
+Need tournament schedule?            → pgaTournaments
+Need player family info?             → playerFamily
+Need family golf background?         → playerFamilyHistory
+Need professional career timeline?   → playerProfessional
+Need hometown/university courses?    → playerNearbyCourses
+Need injury history?                 → playerInjuries
+Need performance intangibles?        → playerIntangibles
 ```
 
 ### Most Used Indexes
 - `tournamentResults.by_player_year` - Player results by year
 - `roundStats.by_player_course` - Split stats queries
 - `playerCourseStats.by_player_course` - Career stats (fastest)
+- **Player Knowledge Hub indexes** (all use `by_player` as primary):
+  - `playerFamily.by_player` - Family info lookup
+  - `playerFamilyHistory.by_player` - Family golf history
+  - `playerProfessional.by_player` - Professional career
+  - `playerNearbyCourses.by_player_type` - Hometown vs university courses
+  - `playerInjuries.by_player_date` - Chronological injury history
+  - `playerIntangibles.by_player_category` - Category-specific intangibles
 
 **📖 Full Reference**: See `DATABASE_MAP.md` for complete schema, relationships, and query patterns
 
@@ -54,14 +75,29 @@ Need tournament schedule?         → pgaTournaments
 ### Frontend
 - `app/inside-the-ropes/page.tsx` - Course-specific player stats
 - `app/tournaments/pga/[year]/page.tsx` - Tournament listings
+- `app/players/page.tsx` - Player profiles with Knowledge Hub + **Category Explorer**
+- `app/players/[playerId]/*/page.tsx` - Player Knowledge Hub category pages (8 categories)
+- `components/layout/MainNavigation.tsx` - **Main navigation tabs (Players, Tournaments, Inside the Ropes)**
 - `components/player/PlayerSelect.tsx` - Player search dropdown
 - `components/player/PlayerStats.tsx` - Player profile stats
+- `components/player/PlayerKnowledgeHub.tsx` - Knowledge Hub navigation (8 categories)
+- `components/player/KnowledgeCard.tsx` - Reusable category card component
+- `components/player/CategoryExplorer.tsx` - Category-first navigation
+- `components/player/CategoryPlayerDialog.tsx` - Player selection dialog for categories
+- `lib/knowledge-categories.ts` - Shared knowledge category constants
 
 ### Backend (Convex)
-- `convex/schema.ts` - Database schema definition
+- `convex/schema.ts` - Database schema definition (now with 6 Player Knowledge Hub tables)
 - `convex/courseStats.ts` - Inside the Ropes calculations
 - `convex/players.ts` - Player queries and mutations
 - `convex/tournamentResults.ts` - Tournament result queries
+- **Player Knowledge Hub functions**:
+  - `convex/playerFamily.ts` - Family information queries/mutations
+  - `convex/playerFamilyHistory.ts` - Family golf background queries/mutations
+  - `convex/playerProfessional.ts` - Professional career queries/mutations
+  - `convex/playerNearbyCourses.ts` - Hometown/university courses queries/mutations
+  - `convex/playerInjuries.ts` - Injury history queries/mutations
+  - `convex/playerIntangibles.ts` - Performance intangibles queries/mutations
 
 ### Documentation
 - `DATABASE_MAP.md` - **Single source of truth** for schema
@@ -77,6 +113,24 @@ Need tournament schedule?         → pgaTournaments
 - Touch-optimized buttons (min 44px)
 - Horizontal scroll for tables on mobile
 - Skeleton loaders for all data fetching
+
+### Main Navigation Tabs
+- **Location**: Below header, above breadcrumbs on all authenticated pages
+- **Tabs**: Players, Tournaments, Inside the Ropes
+- **Active State**: Auto-detects based on current route using `usePathname()`
+- **Mobile-Responsive**: Min 44px touch targets, horizontal layout
+- **Styling**: Golf green (`hsl(142, 76%, 36%)`) for active tab with border-bottom
+- **Component**: `components/layout/MainNavigation.tsx`
+
+### Breadcrumb Navigation
+- Desktop-only display (`hidden sm:block`) below main navigation
+- Consistent pattern across all authenticated pages
+- Examples:
+  - `/players` → Home > Players
+  - `/tournaments/pga/2025` → Home > Tournaments > 2025
+  - `/inside-the-ropes` → Home > Inside the Ropes
+  - `/inside-the-ropes/player-course-stats` → Home > Inside the Ropes > Player Course Stats
+- Uses shadcn/ui Breadcrumb components with border-t separator
 
 ### Color Scheme (Dark Mode)
 ```css
@@ -139,6 +193,13 @@ const results = await ctx.db
 - ✅ `courses` (54 records)
 - ✅ `by_player` queries (200-500 per player)
 - ✅ `by_player_course` queries (bounded)
+- ✅ **All Player Knowledge Hub tables** (all <1K records, bounded by playerId):
+  - `playerFamily` (~200) - one per player
+  - `playerFamilyHistory` (~400) - ~2 per player
+  - `playerProfessional` (~200) - one per player
+  - `playerNearbyCourses` (~800) - ~4 per player
+  - `playerInjuries` (~300) - ~1.5 per player
+  - `playerIntangibles` (~600) - ~3 per player
 - ❌ All `tournamentResults` (20K+)
 
 ### Frontend Year Generation
@@ -202,6 +263,35 @@ const players = useQuery(api.players.getAll, {});
 ```typescript
 const isValidGolfScore = (score: number) => score >= 50 && score <= 100;
 ```
+
+---
+
+## 🎯 Player Knowledge Hub Navigation
+
+### Dual Entry Paths (NEW)
+
+**Player-First Flow** (existing):
+1. User selects player from sidebar
+2. Views player profile
+3. Clicks category card in PlayerKnowledgeHub
+4. Navigates to `/players/{playerId}/{category}`
+
+**Category-First Flow** (NEW):
+1. User clicks category card in CategoryExplorer (on `/players` page)
+2. Dialog opens with player search
+3. User selects player
+4. Auto-redirects to `/players/{playerId}/{category}`
+
+### Components
+- **CategoryExplorer** - Displays 8 category cards above player selection
+- **CategoryPlayerDialog** - Modal for player selection after category click
+- **KnowledgeCard** - Reusable card component (shared between both flows)
+- **knowledgeCategories** - Shared constant in `lib/knowledge-categories.ts`
+
+### Benefits
+- Enables category-focused exploration across multiple players
+- Reduces navigation friction (no need to go back/select player/navigate repeatedly)
+- Maintains visual consistency with existing PlayerKnowledgeHub
 
 ---
 

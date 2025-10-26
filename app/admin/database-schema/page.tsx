@@ -1,48 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Database, Info } from "lucide-react";
+import AppHeader from "@/components/layout/AppHeader";
+import { Info } from "lucide-react";
 import SchemaCanvas from "@/components/admin/database-schema/SchemaCanvas";
 import TableDetailsPanel from "@/components/admin/database-schema/TableDetailsPanel";
 import type { SchemaTable } from "@/lib/schema-parser";
 import { parseSchema } from "@/lib/schema-parser";
 
 export default function DatabaseSchemaPage() {
-  const router = useRouter();
   const [selectedTable, setSelectedTable] = useState<SchemaTable | null>(null);
   const { tables } = parseSchema();
 
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
-        <div className="px-6 py-4">
+      <div className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
+        <AppHeader title="Database Schema" subtitle="Schema visualization" />
+        <div className="px-6 py-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push("/admin/data-management")}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Database className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold">Database Schema Visualizer</h1>
-                  <p className="text-sm text-muted-foreground">
-                    Interactive visualization of GolfGod database structure
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* Stats */}
             <div className="flex items-center gap-4">
               <div className="text-right">
@@ -69,7 +47,7 @@ export default function DatabaseSchemaPage() {
             </Badge>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Canvas Container */}
       <div className="flex-1 relative">

@@ -54,6 +54,100 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_player", ["userId", "playerId"]),
 
+  // Player Knowledge Hub Tables
+  // Personal Family Information
+  playerFamily: defineTable({
+    playerId: v.id("players"),
+    maritalStatus: v.string(), // "Single", "Married", "Divorced", "Widowed"
+    spouseName: v.optional(v.string()),
+    spouseMarriedSince: v.optional(v.number()), // Year
+    children: v.optional(v.array(v.object({
+      name: v.string(),
+      birthYear: v.number(),
+    }))),
+    lastUpdated: v.number(), // Timestamp
+  })
+    .index("by_player", ["playerId"]),
+
+  // Family Golf History
+  playerFamilyHistory: defineTable({
+    playerId: v.id("players"),
+    memberName: v.string(),
+    relationship: v.string(), // "Father", "Mother", "Brother", "Sister", etc.
+    golfLevel: v.string(), // "College", "Professional", "Amateur"
+    achievements: v.string(),
+    yearsActive: v.optional(v.string()), // e.g., "1985-1995"
+    lastUpdated: v.number(),
+  })
+    .index("by_player", ["playerId"])
+    .index("by_golf_level", ["golfLevel"]),
+
+  // Professional Career History
+  playerProfessional: defineTable({
+    playerId: v.id("players"),
+    currentStatus: v.string(), // "PGA Tour", "Korn Ferry", "DP World Tour", "LIV Golf", "Retired", "Amateur"
+    tourCard: v.optional(v.number()), // Year obtained PGA Tour card
+    rookieYear: v.optional(v.number()),
+    careerEarnings: v.optional(v.number()),
+    majorWins: v.optional(v.number()),
+    totalWins: v.optional(v.number()),
+    milestones: v.array(v.object({
+      year: v.number(),
+      achievement: v.string(),
+    })),
+    lastUpdated: v.number(),
+  })
+    .index("by_player", ["playerId"])
+    .index("by_status", ["currentStatus"]),
+
+  // Nearby Courses (Hometown & University)
+  playerNearbyCourses: defineTable({
+    playerId: v.id("players"),
+    courseId: v.id("courses"),
+    courseType: v.string(), // "Hometown" or "University"
+    distanceMiles: v.number(), // Distance from hometown/university (max 180)
+    referenceLocation: v.string(), // City, State of hometown or university
+    eventsPlayed: v.optional(v.number()),
+    avgScore: v.optional(v.number()),
+    bestFinish: v.optional(v.string()), // e.g., "1", "T-3"
+    lastUpdated: v.number(),
+  })
+    .index("by_player", ["playerId"])
+    .index("by_player_type", ["playerId", "courseType"])
+    .index("by_course", ["courseId"]),
+
+  // Injury History
+  playerInjuries: defineTable({
+    playerId: v.id("players"),
+    injuryType: v.string(), // e.g., "Back strain", "Wrist injury"
+    affectedArea: v.string(), // Body part
+    injuryDate: v.string(), // ISO date (YYYY-MM-DD)
+    status: v.string(), // "Active", "Recovering", "Recovered"
+    recoveryTimeline: v.optional(v.string()), // e.g., "4-6 weeks"
+    tournamentsMissed: v.optional(v.number()),
+    impact: v.optional(v.string()),
+    returnDate: v.optional(v.string()), // ISO date
+    lastUpdated: v.number(),
+  })
+    .index("by_player", ["playerId"])
+    .index("by_status", ["status"])
+    .index("by_player_date", ["playerId", "injuryDate"]),
+
+  // Intangibles (Weather, Course Type, Pressure)
+  playerIntangibles: defineTable({
+    playerId: v.id("players"),
+    category: v.string(), // "Weather", "Course Type", "Pressure", "Tournament Size", "Field Strength"
+    subcategory: v.optional(v.string()), // e.g., "Wind", "Rain" for Weather
+    description: v.string(),
+    performanceRating: v.string(), // "Outstanding", "Excellent", "Strong", "Average", "Weak", "Poor"
+    supportingStats: v.optional(v.string()), // Statistical evidence
+    confidence: v.optional(v.string()), // "High", "Medium", "Low"
+    lastUpdated: v.number(),
+  })
+    .index("by_player", ["playerId"])
+    .index("by_category", ["category"])
+    .index("by_player_category", ["playerId", "category"]),
+
   // Tournament results table - Enhanced for detailed scoring
   tournamentResults: defineTable({
     playerId: v.id("players"),

@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AppHeader from "@/components/layout/AppHeader";
 import {
-  ChevronLeft,
   Trash2,
   AlertTriangle,
   CheckCircle,
@@ -115,26 +115,7 @@ export default function DataManagementPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push("/dashboard")}
-                className="mr-3"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold">Data Management</h1>
-                <span className="text-sm text-muted-foreground">Database management and cleanup tools</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader title="Data Management" subtitle="Admin tools" />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">

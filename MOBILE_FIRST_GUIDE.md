@@ -41,6 +41,33 @@ xl: 1280px                  - Large desktop
 - Inside the Ropes: Stats cards, scoring grids
 - Home page: Features section
 
+### Global Overflow Prevention
+```tsx
+// Page container - Prevent horizontal scroll
+<div className="min-h-screen bg-background overflow-x-hidden">
+  {/* Page content */}
+</div>
+
+// Main content wrapper - Add width constraint
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-hidden">
+  {/* Content sections */}
+</div>
+
+// Flex container children - Allow shrinking
+<div className="flex-1 w-full min-w-0">
+  {/* Prevents flex children from causing overflow */}
+</div>
+```
+
+**Key Techniques:**
+- `overflow-x-hidden` on page container prevents any child from causing horizontal scroll
+- `w-full` ensures containers don't exceed viewport width
+- `min-w-0` on flex children allows them to shrink below content size (prevents overflow in flex containers)
+- `max-w-7xl mx-auto` centers content with maximum width constraint
+
+**Implemented in:**
+- `app/players/page.tsx` - Page-level overflow prevention on all containers
+
 ### Responsive Sidebar Pattern
 ```tsx
 {/* Mobile: Hidden, accessible via Sheet drawer */}
@@ -131,7 +158,29 @@ size="sm" className="sm:size-default md:size-lg"
 
 ## 📊 Data Tables
 
-### Horizontal Scroll Pattern
+### Horizontal Scroll Pattern (Wide Tables)
+```tsx
+// Edge-to-edge scroll on mobile, normal on desktop
+<div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+  <table className="w-full text-sm min-w-[640px]">
+    {/* Table content */}
+  </table>
+</div>
+```
+
+**Features:**
+- Horizontal scroll on mobile for wide tables
+- Edge-to-edge scroll on mobile (negative margin technique)
+- `min-w-[640px]` ensures table maintains readability
+- Normal padding on desktop (≥640px)
+- Native CSS scroll behavior (smooth on touch devices)
+
+**Implemented in:**
+- PlayerStats component: Tournament results table
+- Inside the Ropes: Tournament history table
+- `/tournaments/pga/[year]`: Current/Scheduled/Completed tournament tables
+
+### Alternative: ScrollArea Pattern
 ```tsx
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -148,14 +197,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 </Card>
 ```
 
-**Features:**
-- Horizontal scroll on mobile for wide tables
-- Maintains full table functionality
-- Responsive text sizing in cells
-- Proper touch scrolling
-
-**Implemented in:**
-- Inside the Ropes: Tournament history table
+**When to use each:**
+- Use negative margin technique for content within cards (better visual flow)
+- Use ScrollArea for standalone tables or when you need custom scrollbar styling
 
 ### Responsive Table Typography
 ```tsx
@@ -256,40 +300,109 @@ input: {
 </header>
 ```
 
+### Responsive Flex Layout (Avatar + Info)
+```tsx
+// Mobile: Vertical stack (centered)
+// Desktop: Horizontal flex (left-aligned)
+<div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+  {/* Avatar - Smaller on mobile */}
+  <div className="h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0">
+    {/* Avatar content */}
+  </div>
+
+  {/* Info - Center on mobile, left on desktop */}
+  <div className="text-center sm:text-left flex-1 min-w-0">
+    <h2 className="text-2xl sm:text-3xl font-bold">Player Name</h2>
+    <div className="flex items-center justify-center sm:justify-start gap-2">
+      {/* Country flag and name */}
+    </div>
+
+    {/* Full-width button on mobile */}
+    <Button className="w-full sm:w-auto">Follow</Button>
+  </div>
+</div>
+```
+
+**Features**:
+- Mobile (< 640px): Vertical stack with centered avatar and info
+- Desktop (≥ 640px): Horizontal layout with left-aligned content
+- Avatar scales: 96px mobile → 128px desktop
+- Button adapts: Full-width mobile → auto-width desktop
+- `min-w-0` on flex child prevents overflow in flex containers
+
+**Implemented in:**
+- PlayerBio component: Player profile header with avatar and follow button
+
 ### Horizontal Scrollable Tabs
 ```tsx
-// Mobile: Horizontal scroll, Desktop: Grid layout
+// Mobile: Horizontal scroll
 <Tabs defaultValue="tab1" className="w-full">
-  <TabsList className="inline-flex h-auto w-full justify-start overflow-x-auto scrollbar-hide lg:grid lg:grid-cols-5 lg:overflow-x-visible">
-    <TabsTrigger value="tab1" className="flex-shrink-0">Tab 1</TabsTrigger>
-    <TabsTrigger value="tab2" className="flex-shrink-0">Tab 2</TabsTrigger>
-    <TabsTrigger value="tab3" className="flex-shrink-0">Tab 3</TabsTrigger>
-    <TabsTrigger value="tab4" className="flex-shrink-0">Tab 4</TabsTrigger>
-    <TabsTrigger value="tab5" className="flex-shrink-0">Tab 5</TabsTrigger>
+  <TabsList className="w-full h-auto p-0 bg-transparent rounded-none border-b">
+    <div className="flex w-full overflow-x-auto scrollbar-hide">
+      <TabsTrigger value="tab1" className="flex-shrink-0 min-w-[80px]">Tab 1</TabsTrigger>
+      <TabsTrigger value="tab2" className="flex-shrink-0 min-w-[80px]">Tab 2</TabsTrigger>
+      <TabsTrigger value="tab3" className="flex-shrink-0 min-w-[80px]">Tab 3</TabsTrigger>
+      <TabsTrigger value="tab4" className="flex-shrink-0 min-w-[80px]">Tab 4</TabsTrigger>
+      <TabsTrigger value="tab5" className="flex-shrink-0 min-w-[80px]">Tab 5</TabsTrigger>
+    </div>
   </TabsList>
   {/* Tab content */}
 </Tabs>
 
-// Add to globals.css for clean scrolling:
-@layer utilities {
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+// Add to tailwind.config.js for clean scrolling:
+plugins: [
+  require("tailwindcss-animate"),
+  function({ addUtilities }) {
+    addUtilities({
+      '.scrollbar-hide': {
+        '-ms-overflow-style': 'none',
+        'scrollbar-width': 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none'
+        }
+      }
+    })
   }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
+]
 ```
 
 **Features**:
 - Mobile: Single row with horizontal swipe scrolling
-- Desktop: 5-column grid layout
-- No visible scrollbar on mobile
+- No visible scrollbar on mobile (clean UX)
 - `flex-shrink-0` prevents tab text wrapping
+- `min-w-[80px]` ensures ≥44px touch targets with padding
+- Native CSS scroll behavior (no JS required)
 
 **Implemented in:**
-- Inside the Ropes: Statistics tabs with 5 options
+- PlayerStats component: Main tabs (Overview, News, Bio, Results, Scorecards)
+- PlayerStats component: Year selector tabs (All Years, 2015-2026)
+
+### Tour Navigation Tabs (Horizontal Scroll)
+```tsx
+// 6+ tabs with horizontal scroll on mobile
+<div className="border-b bg-secondary">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="overflow-x-auto scrollbar-hide">
+      <div className="flex gap-1 py-2 min-w-max">
+        <button className="flex-shrink-0 min-w-[100px] px-4 py-2">Tab 1</button>
+        <button className="flex-shrink-0 min-w-[100px] px-4 py-2">Tab 2</button>
+        {/* More tabs... */}
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+**Features**:
+- Horizontal scroll on mobile for 6+ navigation tabs
+- `min-w-max` prevents tab wrapping
+- `flex-shrink-0` prevents individual tab compression
+- `min-w-[100px]` ensures ≥44px touch targets with padding
+- Clean scrolling with `scrollbar-hide` utility
+- Native CSS scroll behavior (no JavaScript)
+
+**Implemented in:**
+- `/tournaments/pga/[year]` - Tour navigation (PGA TOUR, LPGA, Champions, etc.)
 
 ---
 
@@ -406,14 +519,24 @@ h-11 sm:h-10            // Mobile 44px, desktop 40px
 
 ### Core Layout Components
 - `components/layout/Dashboard.tsx` - Mobile-first grid and cards
-- `app/players/page.tsx` - Responsive sidebar with Sheet
+- `app/players/page.tsx` - Responsive sidebar with Sheet + overflow prevention
 
 ### Feature Pages
 - `app/inside-the-ropes/page.tsx` - ScrollArea tables
 - `app/page.tsx` - Home page responsive typography
 
+### Tournament Pages
+- `app/tournaments/pga/[year]/page.tsx` - Tour navigation tabs + horizontal scrolling tables
+
+### Player Profile Components
+- `components/player/PlayerBio.tsx` - Responsive flex layout (vertical mobile → horizontal desktop)
+- `components/player/PlayerStats.tsx` - Horizontal scrolling tabs + wide table wrapper
+
 ### UI Components
 - `components/ui/searchable-select.tsx` - Touch-optimized dropdown
+
+### Configuration
+- `tailwind.config.js` - Added `.scrollbar-hide` utility class for clean mobile scrolling
 
 ---
 

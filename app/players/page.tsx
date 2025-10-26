@@ -10,10 +10,10 @@ import PlayerKnowledgeHub from "@/components/player/PlayerKnowledgeHub";
 import PlayerRankings from "@/components/player/PlayerRankings";
 import PlayerStats from "@/components/player/PlayerStats";
 import CategoryExplorer from "@/components/player/CategoryExplorer";
-import UserMenu from "@/components/layout/UserMenu";
-import { ModeToggle } from "@/components/mode-toggle";
+import AppHeader from "@/components/layout/AppHeader";
+import MainNavigation from "@/components/layout/MainNavigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Sheet,
@@ -63,84 +63,58 @@ export default function PlayersPage() {
       </Unauthenticated>
 
       <Authenticated>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background overflow-x-hidden">
           {/* Header */}
-          <header className="bg-card border-b">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-16">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => router.push("/")}
-                    className="hidden lg:flex"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </Button>
-                  {/* Mobile Menu Button */}
-                  <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="lg:hidden"
-                      >
-                        <Menu className="h-5 w-5" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-80">
-                      <SheetHeader>
-                        <SheetTitle>Player Selection</SheetTitle>
-                      </SheetHeader>
-                      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-                        <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="players">Players</TabsTrigger>
-                          <TabsTrigger value="rankings">Rankings</TabsTrigger>
-                        </TabsList>
+          <AppHeader title="Players" subtitle="Player profiles and analytics" />
 
-                        <TabsContent value="players" className="mt-4">
-                          <h3 className="font-semibold mb-3">Select Player</h3>
-                          <PlayerSelect
-                            onSelectPlayer={(id) => {
-                              setSelectedPlayerId(id);
-                              setSheetOpen(false);
-                            }}
-                            selectedPlayerId={selectedPlayerId}
-                          />
-                        </TabsContent>
+          {/* Mobile Menu Button - Fixed position overlay */}
+          <div className="lg:hidden fixed top-4 left-4 z-50">
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="lg:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80">
+                <SheetHeader>
+                  <SheetTitle>Player Selection</SheetTitle>
+                </SheetHeader>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="players">Players</TabsTrigger>
+                    <TabsTrigger value="rankings">Rankings</TabsTrigger>
+                  </TabsList>
 
-                        <TabsContent value="rankings" className="mt-4">
-                          <PlayerRankings
-                            onSelectPlayer={(id) => {
-                              setSelectedPlayerId(id);
-                              setSheetOpen(false);
-                            }}
-                          />
-                        </TabsContent>
-                      </Tabs>
-                    </SheetContent>
-                  </Sheet>
-                  <div>
-                    <h1 className="text-lg sm:text-xl font-semibold">Player Analytics</h1>
-                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
-                      Select a player to view detailed statistics
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <Button
-                    className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
-                    onClick={() => router.push("/")}
-                  >
-                    <span className="hidden sm:inline">PGA TOUR</span>
-                    <span className="sm:hidden">PGA</span>
-                  </Button>
-                  <ModeToggle />
-                  <UserMenu />
-                </div>
-              </div>
-            </div>
-          </header>
+                  <TabsContent value="players" className="mt-4">
+                    <h3 className="font-semibold mb-3">Select Player</h3>
+                    <PlayerSelect
+                      onSelectPlayer={(id) => {
+                        setSelectedPlayerId(id);
+                        setSheetOpen(false);
+                      }}
+                      selectedPlayerId={selectedPlayerId}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="rankings" className="mt-4">
+                    <PlayerRankings
+                      onSelectPlayer={(id) => {
+                        setSelectedPlayerId(id);
+                        setSheetOpen(false);
+                      }}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Main Navigation */}
+          <MainNavigation />
 
           {/* Breadcrumbs - Desktop Only */}
           <div className="hidden sm:block border-t">
@@ -160,7 +134,7 @@ export default function PlayersPage() {
           </div>
 
           {/* Main Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 w-full overflow-x-hidden">
             <div className="flex gap-4 lg:gap-6">
               {/* Left Sidebar - Desktop Only */}
               <div className="hidden lg:block w-80 flex-shrink-0">
@@ -189,7 +163,7 @@ export default function PlayersPage() {
               </div>
 
               {/* Main Content Area */}
-              <div className="flex-1 w-full">
+              <div className="flex-1 w-full min-w-0">
                 {/* Category Explorer - only visible when no player selected */}
                 {!selectedPlayerId && <CategoryExplorer />}
 

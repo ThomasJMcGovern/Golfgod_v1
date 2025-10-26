@@ -77,34 +77,34 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
         {/* Tab Navigation */}
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full h-auto p-0 bg-transparent rounded-none border-b">
-            <div className="flex w-full">
+            <div className="flex w-full overflow-x-auto scrollbar-hide">
               <TabsTrigger
                 value="overview"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
+                className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
               >
                 Overview
               </TabsTrigger>
               <TabsTrigger
                 value="news"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
+                className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
               >
                 News
               </TabsTrigger>
               <TabsTrigger
                 value="bio"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
+                className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
               >
                 Bio
               </TabsTrigger>
               <TabsTrigger
                 value="results"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
+                className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
               >
                 Results
               </TabsTrigger>
               <TabsTrigger
                 value="scorecards"
-                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
+                className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-red-600 data-[state=active]:bg-transparent px-4 py-3 text-sm font-medium"
               >
                 Scorecards
               </TabsTrigger>
@@ -314,10 +314,10 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                   {/* Year Selector Tabs */}
                   <Tabs defaultValue="all" value={String(selectedYear)} onValueChange={(value) => setSelectedYear(value === "all" ? "all" : Number(value))}>
                     <TabsList className="w-full h-auto p-0 bg-secondary rounded-none border-b">
-                      <div className="flex w-full overflow-x-auto">
+                      <div className="flex w-full overflow-x-auto scrollbar-hide">
                         <TabsTrigger
                           value="all"
-                          className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
+                          className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
                         >
                           All Years
                         </TabsTrigger>
@@ -325,7 +325,7 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                           <TabsTrigger
                             key={year}
                             value={String(year)}
-                            className="flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
+                            className="flex-shrink-0 min-w-[80px] rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-card px-4 py-3 text-sm font-medium"
                           >
                             {year}
                           </TabsTrigger>
@@ -345,8 +345,8 @@ export default function PlayerStats({ playerId }: PlayerStatsProps) {
                         </div>
 
                         {filteredResults && filteredResults.length > 0 ? (
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                          <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+                            <table className="w-full text-sm min-w-[640px]">
                               <thead>
                                 <tr className="border-b text-left">
                                   <th className="pb-3 font-semibold">Date</th>

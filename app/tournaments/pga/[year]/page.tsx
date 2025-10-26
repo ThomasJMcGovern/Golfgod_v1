@@ -7,9 +7,8 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import UserMenu from "@/components/layout/UserMenu";
-import { ModeToggle } from "@/components/mode-toggle";
+import AppHeader from "@/components/layout/AppHeader";
+import MainNavigation from "@/components/layout/MainNavigation";
 import {
   Select,
   SelectContent,
@@ -26,6 +25,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 // Country code to flag emoji mapping
 const countryFlags: { [key: string]: string } = {
@@ -278,66 +285,65 @@ export default function YearTournamentsPage() {
       </Unauthenticated>
 
       <Authenticated>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background overflow-x-hidden">
           {/* Header */}
-          <header className="bg-card border-b">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-16">
-                <div className="flex items-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => router.push("/")}
-                    className="mr-3"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </Button>
-                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold">PGA TOUR Schedule {year}</h1>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <Button
-                    className="bg-green-700 hover:bg-green-800 text-white text-xs sm:text-sm px-2 sm:px-4"
-                    onClick={() => router.push("/")}
-                  >
-                    <span className="hidden sm:inline">PGA TOUR</span>
-                    <span className="sm:hidden">PGA</span>
-                  </Button>
-                  <ModeToggle />
-                  <UserMenu />
-                </div>
-              </div>
+          <AppHeader title={`PGA TOUR ${year}`} subtitle="Tournament schedule and results" />
+
+          {/* Main Navigation */}
+          <MainNavigation />
+
+          {/* Breadcrumbs - Desktop Only */}
+          <div className="hidden sm:block border-t">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/tournaments">Tournaments</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{year}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
             </div>
-          </header>
+          </div>
 
           {/* Tour Navigation */}
           <div className="border-b bg-secondary">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex gap-1 py-2">
-                <button
-                  className={`px-4 py-2 font-medium ${
-                    activeTour === "pga"
-                      ? "text-red-600 border-b-2 border-red-600"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setActiveTour("pga")}
-                >
-                  PGA TOUR
-                </button>
-                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
-                  LPGA
-                </button>
-                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
-                  PGA TOUR Champions
-                </button>
-                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
-                  LIV
-                </button>
-                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
-                  DP World
-                </button>
-                <button className="px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
-                  Korn Ferry
-                </button>
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-1 py-2 min-w-max">
+                  <button
+                    className={`flex-shrink-0 min-w-[100px] px-4 py-2 font-medium ${
+                      activeTour === "pga"
+                        ? "text-red-600 border-b-2 border-red-600"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setActiveTour("pga")}
+                  >
+                    PGA TOUR
+                  </button>
+                  <button className="flex-shrink-0 min-w-[100px] px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
+                    LPGA
+                  </button>
+                  <button className="flex-shrink-0 min-w-[100px] px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
+                    PGA TOUR Champions
+                  </button>
+                  <button className="flex-shrink-0 min-w-[100px] px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
+                    LIV
+                  </button>
+                  <button className="flex-shrink-0 min-w-[100px] px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
+                    DP World
+                  </button>
+                  <button className="flex-shrink-0 min-w-[100px] px-4 py-2 text-muted-foreground/50 cursor-not-allowed">
+                    Korn Ferry
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -361,50 +367,52 @@ export default function YearTournamentsPage() {
           </div>
 
           {/* Main Content */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full overflow-x-hidden">
             {tournaments ? (
               <div className="space-y-8">
                 {/* Current Tournaments */}
                 <div>
                   <h2 className="text-xl font-bold mb-4">Current Tournaments</h2>
                   {categorizedTournaments.current.length > 0 ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[120px]">DATES</TableHead>
-                          <TableHead>TOURNAMENT</TableHead>
-                          <TableHead>PREVIOUS WINNER</TableHead>
-                          <TableHead className="text-right">PURSE</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {categorizedTournaments.current.map((tournament) => (
-                          <TableRow key={tournament._id}>
-                            <TableCell className="align-top">
-                              {formatDate(tournament.start_date, tournament.end_date)}
-                            </TableCell>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium text-blue-600 hover:text-blue-800">
-                                  {tournament.name}
-                                </div>
-                                {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-muted-foreground">
-                                    {tournament.dates_raw.split("-")[1].trim()}
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {formatPrizeMoney(tournament.prize_money)}
-                            </TableCell>
+                    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                      <Table className="min-w-[640px]">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[120px]">DATES</TableHead>
+                            <TableHead>TOURNAMENT</TableHead>
+                            <TableHead>PREVIOUS WINNER</TableHead>
+                            <TableHead className="text-right">PURSE</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {categorizedTournaments.current.map((tournament) => (
+                            <TableRow key={tournament._id}>
+                              <TableCell className="align-top">
+                                {formatDate(tournament.start_date, tournament.end_date)}
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium text-blue-600 hover:text-blue-800">
+                                    {tournament.name}
+                                  </div>
+                                  {tournament.dates_raw && tournament.dates_raw.includes("-") && (
+                                    <div className="text-sm text-muted-foreground">
+                                      {tournament.dates_raw.split("-")[1].trim()}
+                                    </div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {formatPrizeMoney(tournament.prize_money)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   ) : (
                     <p className="text-muted-foreground py-4">No tournaments are currently in progress</p>
                   )}
@@ -414,43 +422,45 @@ export default function YearTournamentsPage() {
                 <div>
                   <h2 className="text-xl font-bold mb-4">Scheduled Tournaments</h2>
                   {categorizedTournaments.scheduled.length > 0 ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[120px]">DATES</TableHead>
-                          <TableHead>TOURNAMENT</TableHead>
-                          <TableHead>PREVIOUS WINNER</TableHead>
-                          <TableHead className="text-right">PURSE</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {categorizedTournaments.scheduled.map((tournament) => (
-                          <TableRow key={tournament._id}>
-                            <TableCell className="align-top">
-                              {formatDate(tournament.start_date, tournament.end_date)}
-                            </TableCell>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium text-blue-600 hover:text-blue-800">
-                                  {tournament.name}
-                                </div>
-                                {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-muted-foreground">
-                                    {tournament.dates_raw.split("-")[1].trim()}
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {formatPrizeMoney(tournament.prize_money)}
-                            </TableCell>
+                    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                      <Table className="min-w-[640px]">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[120px]">DATES</TableHead>
+                            <TableHead>TOURNAMENT</TableHead>
+                            <TableHead>PREVIOUS WINNER</TableHead>
+                            <TableHead className="text-right">PURSE</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {categorizedTournaments.scheduled.map((tournament) => (
+                            <TableRow key={tournament._id}>
+                              <TableCell className="align-top">
+                                {formatDate(tournament.start_date, tournament.end_date)}
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium text-blue-600 hover:text-blue-800">
+                                    {tournament.name}
+                                  </div>
+                                  {tournament.dates_raw && tournament.dates_raw.includes("-") && (
+                                    <div className="text-sm text-muted-foreground">
+                                      {tournament.dates_raw.split("-")[1].trim()}
+                                    </div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <PlayerLink name={tournament.previous_winner_name || tournament.winner_name} />
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {formatPrizeMoney(tournament.prize_money)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   ) : (
                     <p className="text-muted-foreground py-4">No upcoming tournaments scheduled</p>
                   )}
@@ -460,50 +470,52 @@ export default function YearTournamentsPage() {
                 <div>
                   <h2 className="text-xl font-bold mb-4">Completed Tournaments</h2>
                   {categorizedTournaments.completed.length > 0 ? (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[120px]">DATES</TableHead>
-                          <TableHead>TOURNAMENT</TableHead>
-                          <TableHead>WINNER</TableHead>
-                          <TableHead className="text-right">SCORE/PRIZE</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {categorizedTournaments.completed.map((tournament) => (
-                          <TableRow key={tournament._id}>
-                            <TableCell className="align-top">
-                              {formatDate(tournament.start_date, tournament.end_date)}
-                            </TableCell>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium text-blue-600 hover:text-blue-800">
-                                  {tournament.name}
+                    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                      <Table className="min-w-[640px]">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[120px]">DATES</TableHead>
+                            <TableHead>TOURNAMENT</TableHead>
+                            <TableHead>WINNER</TableHead>
+                            <TableHead className="text-right">SCORE/PRIZE</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {categorizedTournaments.completed.map((tournament) => (
+                            <TableRow key={tournament._id}>
+                              <TableCell className="align-top">
+                                {formatDate(tournament.start_date, tournament.end_date)}
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium text-blue-600 hover:text-blue-800">
+                                    {tournament.name}
+                                  </div>
+                                  {tournament.dates_raw && tournament.dates_raw.includes("-") && (
+                                    <div className="text-sm text-muted-foreground">
+                                      {tournament.dates_raw.split("-")[1].trim()}
+                                    </div>
+                                  )}
                                 </div>
-                                {tournament.dates_raw && tournament.dates_raw.includes("-") && (
-                                  <div className="text-sm text-muted-foreground">
-                                    {tournament.dates_raw.split("-")[1].trim()}
+                              </TableCell>
+                              <TableCell>
+                                <PlayerLink name={tournament.winner_name} />
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {tournament.winning_score && (
+                                  <div className="text-sm">{tournament.winning_score}</div>
+                                )}
+                                {tournament.prize_money && (
+                                  <div className="text-sm text-foreground/80">
+                                    {formatPrizeMoney(tournament.prize_money)}
                                   </div>
                                 )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <PlayerLink name={tournament.winner_name} />
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {tournament.winning_score && (
-                                <div className="text-sm">{tournament.winning_score}</div>
-                              )}
-                              {tournament.prize_money && (
-                                <div className="text-sm text-foreground/80">
-                                  {formatPrizeMoney(tournament.prize_money)}
-                                </div>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   ) : (
                     <p className="text-muted-foreground py-4">No completed tournaments for this year</p>
                   )}

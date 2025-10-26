@@ -46,43 +46,40 @@ export default function PlayerBio({ playerId }: PlayerBioProps) {
       <div className="relative h-32 bg-gradient-to-br from-blue-600 via-white to-red-600 opacity-10"></div>
 
       <CardContent className="relative -mt-16">
-        <div className="flex items-start">
-          <div className="flex items-start gap-6">
-            {/* Player Avatar */}
-            <div className="relative h-32 w-32 border-4 border-card shadow-lg rounded-full overflow-hidden bg-secondary">
-              {player.photoUrl ? (
-                <img
-                  src={player.photoUrl}
-                  alt={player.name}
-                  className="w-full h-full object-cover object-center"
-                  style={{ objectPosition: '50% 30%' }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-2xl bg-green-100 text-green-800">
-                  {player.firstName[0]}{player.lastName[0]}
-                </div>
-              )}
-            </div>
-
-            {/* Player Info */}
-            <div className="pt-6">
-              <h2 className="text-3xl font-bold mb-1">
-                {player.firstName.toUpperCase()} {player.lastName.toUpperCase()}
-              </h2>
-              <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                {getFlagEmoji(player.countryCode)}
-                <span>{player.country}</span>
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+          {/* Player Avatar */}
+          <div className="relative h-24 w-24 sm:h-32 sm:w-32 border-4 border-card shadow-lg rounded-full overflow-hidden bg-secondary flex-shrink-0">
+            {player.photoUrl ? (
+              <img
+                src={player.photoUrl}
+                alt={player.name}
+                className="w-full h-full object-cover object-center"
+                style={{ objectPosition: '50% 30%' }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xl sm:text-2xl bg-green-100 text-green-800">
+                {player.firstName[0]}{player.lastName[0]}
               </div>
-
-              <Button
-                onClick={handleFollowToggle}
-                className={isFollowing ? "bg-secondary text-secondary-foreground hover:bg-secondary/80" : "bg-blue-600 hover:bg-blue-700"}
-              >
-                {isFollowing ? "Following" : "Follow"}
-              </Button>
-            </div>
+            )}
           </div>
 
+          {/* Player Info */}
+          <div className="pt-0 sm:pt-6 text-center sm:text-left flex-1 min-w-0">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-1">
+              {player.firstName.toUpperCase()} {player.lastName.toUpperCase()}
+            </h2>
+            <div className="flex items-center justify-center sm:justify-start gap-2 text-muted-foreground mb-4">
+              {getFlagEmoji(player.countryCode)}
+              <span>{player.country}</span>
+            </div>
+
+            <Button
+              onClick={handleFollowToggle}
+              className={`w-full sm:w-auto ${isFollowing ? "bg-secondary text-secondary-foreground hover:bg-secondary/80" : "bg-blue-600 hover:bg-blue-700"}`}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
