@@ -5,11 +5,15 @@
  * Uses placeholder data - backend integration coming in future phase.
  */
 
+"use client";
 
+import { use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPlaceholderUniversityCourses } from "@/lib/placeholder-data";
 import { GraduationCap, MapPin, Navigation, TrendingUp } from "lucide-react";
+import PlayerBio from "@/components/player/PlayerBio";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface UniversityCoursesPageProps {
   params: Promise<{
@@ -17,12 +21,15 @@ interface UniversityCoursesPageProps {
   }>;
 }
 
-export default async function UniversityCoursesPage({ params }: UniversityCoursesPageProps) {
-  const { playerId } = await params;
+export default function UniversityCoursesPage({ params }: UniversityCoursesPageProps) {
+  const { playerId } = use(params);
   const courses = getPlaceholderUniversityCourses(playerId);
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header */}
+      <PlayerBio playerId={playerId as Id<"players">} />
+
       {/* Data Notice */}
       <Card className="border-primary/50 bg-primary/5">
         <CardContent className="pt-6">

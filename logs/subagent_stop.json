@@ -350,5 +350,53 @@
     "permission_mode": "default",
     "hook_event_name": "SubagentStop",
     "stop_hook_active": false
+  },
+  {
+    "session_id": "f4693d70-cca6-453f-bc18-9a9655907c41",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/f4693d70-cca6-453f-bc18-9a9655907c41.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "f4693d70-cca6-453f-bc18-9a9655907c41",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/f4693d70-cca6-453f-bc18-9a9655907c41.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "f846e24c-b8ba-4095-8f5d-d67fd8b94f93",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/f846e24c-b8ba-4095-8f5d-d67fd8b94f93.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "f846e24c-b8ba-4095-8f5d-d67fd8b94f93",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/f846e24c-b8ba-4095-8f5d-d67fd8b94f93.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "51dceba8-7323-47a1-8bd1-658f8f0caf11",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/51dceba8-7323-47a1-8bd1-658f8f0caf11.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "51dceba8-7323-47a1-8bd1-658f8f0caf11",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/51dceba8-7323-47a1-8bd1-658f8f0caf11.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "default",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
   }
 ]

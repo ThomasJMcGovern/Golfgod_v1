@@ -5,11 +5,15 @@
  * Uses placeholder data - backend integration coming in future phase.
  */
 
+"use client";
 
+import { use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPlaceholderHometownCourses } from "@/lib/placeholder-data";
 import { Home, MapPin, Navigation, TrendingUp } from "lucide-react";
+import PlayerBio from "@/components/player/PlayerBio";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface HometownCoursesPageProps {
   params: Promise<{
@@ -17,12 +21,15 @@ interface HometownCoursesPageProps {
   }>;
 }
 
-export default async function HometownCoursesPage({ params }: HometownCoursesPageProps) {
-  const { playerId } = await params;
+export default function HometownCoursesPage({ params }: HometownCoursesPageProps) {
+  const { playerId } = use(params);
   const courses = getPlaceholderHometownCourses(playerId);
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header */}
+      <PlayerBio playerId={playerId as Id<"players">} />
+
       {/* Data Notice */}
       <Card className="border-primary/50 bg-primary/5">
         <CardContent className="pt-6">

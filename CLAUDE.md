@@ -78,12 +78,14 @@ Need performance intangibles?        → playerIntangibles
 - `app/players/page.tsx` - Player profiles with Knowledge Hub + **Category Explorer**
 - `app/players/[playerId]/*/page.tsx` - Player Knowledge Hub category pages (8 categories)
 - `components/layout/MainNavigation.tsx` - **Main navigation tabs (Players, Tournaments, Inside the Ropes)**
-- `components/player/PlayerSelect.tsx` - Player search dropdown
+- `components/player/PlayerSelect.tsx` - Player search dropdown (legacy, use CategoryPlayerDialog for new features)
 - `components/player/PlayerStats.tsx` - Player profile stats
 - `components/player/PlayerKnowledgeHub.tsx` - Knowledge Hub navigation (8 categories)
 - `components/player/KnowledgeCard.tsx` - Reusable category card component
 - `components/player/CategoryExplorer.tsx` - Category-first navigation
-- `components/player/CategoryPlayerDialog.tsx` - **Command palette player selection dialog** (uses shadcn/ui Command component)
+- `components/player/CategoryPlayerDialog.tsx` - **Command palette player selection dialog** (preferred pattern)
+- `components/tournament/CategoryCourseDialog.tsx` - **Command palette course selection dialog** (mirrors player dialog)
+- `components/tournament/CourseSelect.tsx` - Course search dropdown (legacy, use CategoryCourseDialog for new features)
 - `lib/knowledge-categories.ts` - Shared knowledge category constants
 
 ### Backend (Convex)
@@ -123,7 +125,8 @@ Need performance intangibles?        → playerIntangibles
 - **Component**: `components/layout/MainNavigation.tsx`
 
 ### Breadcrumb Navigation
-- Desktop-only display (`hidden sm:block`) below main navigation
+- Responsive display on all screen sizes (mobile, tablet, desktop)
+- Located below main navigation on all authenticated pages
 - Consistent pattern across all authenticated pages
 - Examples:
   - `/players` → Home > Players
@@ -141,8 +144,22 @@ Need performance intangibles?        → playerIntangibles
 --accent: hsl(142, 76%, 45%)          /* Bright green */
 ```
 
+### Preferred Search Pattern (Command Palette)
+**Use command palette dialogs for all new search interfaces**:
+- ✅ **CategoryPlayerDialog** - Player selection with flags and keyboard navigation
+- ✅ **CategoryCourseDialog** - Course selection with location display
+- ❌ **PlayerSelect** - Legacy react-select dropdown (being phased out)
+- ❌ **CourseSelect** - Legacy react-select dropdown (deprecated)
+
+**Why command palette pattern?**:
+- Better keyboard navigation (arrows, enter, esc)
+- Consistent UX across player and course selection
+- Mobile-friendly (≥44px touch targets)
+- More professional UI with keyboard hints
+- Uses shadcn/ui Command component (accessible, fast)
+
 ### Common Components
-- `SearchableSelect` - Searchable dropdown with flags
+- `SearchableSelect` - Searchable dropdown with flags (legacy pattern)
 - `Skeleton` - Loading states
 - `Badge` - Position indicators (Win, T10, MC)
 - `Tabs` - Multi-view data presentation
@@ -266,32 +283,47 @@ const isValidGolfScore = (score: number) => score >= 50 && score <= 100;
 
 ---
 
-## 🎯 Player Knowledge Hub Navigation
+## 🎯 Category-First Navigation Pattern
 
-### Dual Entry Paths (NEW)
+### Player Knowledge Hub Navigation
 
-**Player-First Flow** (existing):
+**Player-First Flow**:
 1. User selects player from sidebar
 2. Views player profile
 3. Clicks category card in PlayerKnowledgeHub
 4. Navigates to `/players/{playerId}/{category}`
 
-**Category-First Flow** (NEW):
+**Category-First Flow**:
 1. User clicks category card in CategoryExplorer (on `/players` page)
 2. Dialog opens with player search
 3. User selects player
 4. Auto-redirects to `/players/{playerId}/{category}`
 
-### Components
+**Components**:
 - **CategoryExplorer** - Displays 8 category cards above player selection
 - **CategoryPlayerDialog** - Modal for player selection after category click
-- **KnowledgeCard** - Reusable card component (shared between both flows)
+- **KnowledgeCard** - Reusable card component (shared across features)
 - **knowledgeCategories** - Shared constant in `lib/knowledge-categories.ts`
 
-### Benefits
-- Enables category-focused exploration across multiple players
-- Reduces navigation friction (no need to go back/select player/navigate repeatedly)
-- Maintains visual consistency with existing PlayerKnowledgeHub
+### Tournament Course Explorer Navigation
+
+**Category-First Flow** (matches Player Knowledge Hub pattern):
+1. User clicks category card in TournamentCourseExplorer (on `/tournaments/pga/[year]` page)
+2. Dialog opens with course search
+3. User selects course
+4. Auto-redirects to `/tournaments/pga/{year}/course/{courseId}/{category}`
+
+**Components**:
+- **TournamentCourseExplorer** - Displays 6 course category cards
+- **CategoryCourseDialog** - Modal for course selection after category click
+- **KnowledgeCard** - Reusable card component (shared across features)
+- **courseCategories** - Shared constant in `lib/course-categories.ts`
+
+### Pattern Benefits
+- **Unified UX**: Consistent navigation pattern across Players and Tournaments
+- **Reduced friction**: No pre-selection required, direct category access
+- **Visual consistency**: All explorers use same "What Would You Like to Know?" header and card grid
+- **Component reusability**: KnowledgeCard shared across both features
 
 ---
 

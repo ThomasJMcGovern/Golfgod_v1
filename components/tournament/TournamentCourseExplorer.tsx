@@ -1,20 +1,23 @@
 /**
  * TournamentCourseExplorer Component
  *
- * Course information explorer for tournament pages.
- * Displays "What Would You Like to Know?" section with 6 category cards.
+ * Category-first navigation interface for Tournament Course Explorer.
+ * Displays 6 course category cards that open course selection dialog.
  *
  * User Flow:
- * 1. User selects a course from dropdown
- * 2. User clicks on a category card (e.g., "Course Information")
- * 3. Navigates to /tournaments/pga/{year}/course/{courseId}/{category}
+ * 1. User clicks on a category card (e.g., "Course Information")
+ * 2. Dialog opens prompting course selection
+ * 3. User searches/selects a course
+ * 4. Automatically redirects to /tournaments/pga/{year}/course/{courseId}/{category}
  *
  * Features:
- * - Course selection dropdown
+ * - Category-first navigation pattern (matches Player Knowledge Hub)
+ * - Command palette-style course selection dialog
  * - 6 responsive category cards
  * - Mobile-first design with ≥44px touch targets
  * - Dark mode support
- * - Shows message if no course selected
+ * - Keyboard navigation
+ * - Reuses KnowledgeCard component for visual consistency
  */
 
 "use client";
@@ -24,7 +27,7 @@ import { useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { courseCategories } from "@/lib/course-categories";
 import { KnowledgeCard } from "@/components/player/KnowledgeCard";
-import CourseSelect from "./CourseSelect";
+import CategoryCourseDialog from "./CategoryCourseDialog";
 
 interface TournamentCourseExplorerProps {
   year: number;
@@ -34,23 +37,50 @@ export default function TournamentCourseExplorer({
   year,
 }: TournamentCourseExplorerProps) {
   const router = useRouter();
-  const [selectedCourseId, setSelectedCourseId] = useState<Id<"courses"> | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
    * Handle category card click.
-   * If course is selected, navigate to category page.
-   * If no course selected, show message (handled by onclick toast).
+   * Opens course selection dialog for the clicked category.
    */
   const handleCategoryClick = (categoryId: string) => {
-    if (!selectedCourseId) {
-      // Show a simple alert for now (can be replaced with toast notification)
-      alert("Please select a course first to view this information.");
-      return;
-    }
-
-    // Navigate to category page
-    router.push(`/tournaments/pga/${year}/course/${selectedCourseId}/${categoryId}`);
+    setSelectedCategory(categoryId);
+    setDialogOpen(true);
   };
+
+  /**
+   * Handle course selection from dialog.
+   * Redirects to the category page for the selected course.
+   */
+  const handleCourseSelect = (courseId: Id<"courses">) => {
+    if (selectedCategory) {
+      // Close dialog
+      setDialogOpen(false);
+
+      // Redirect to category page for selected course
+      router.push(`/tournaments/pga/${year}/course/${courseId}/${selectedCategory}`);
+
+      // Reset state
+      setSelectedCategory(null);
+    }
+  };
+
+  /**
+   * Handle dialog close without selection.
+   * Resets state and returns to tournament page.
+   */
+  const handleDialogClose = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setSelectedCategory(null);
+    }
+  };
+
+  // Get selected category data for dialog
+  const selectedCategoryData = selectedCategory
+    ? courseCategories.find((cat) => cat.id === selectedCategory)
+    : null;
 
   return (
     <div className="bg-card rounded-lg shadow p-4 sm:p-6">
@@ -61,17 +91,6 @@ export default function TournamentCourseExplorer({
         <p className="text-sm sm:text-base text-muted-foreground">
           Explore comprehensive course details and historical data
         </p>
-      </div>
-
-      {/* Course Selection */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">
-          Select a Course
-        </label>
-        <CourseSelect
-          onSelectCourse={setSelectedCourseId}
-          selectedCourseId={selectedCourseId}
-        />
       </div>
 
       {/* Category cards grid - mobile-first responsive */}
@@ -92,11 +111,14 @@ export default function TournamentCourseExplorer({
         ))}
       </div>
 
-      {/* Helper text */}
-      {!selectedCourseId && (
-        <p className="text-xs text-muted-foreground mt-4 text-center">
-          Select a course above to explore detailed course information
-        </p>
+      {/* Course selection dialog */}
+      {selectedCategoryData && (
+        <CategoryCourseDialog
+          open={dialogOpen}
+          onOpenChange={handleDialogClose}
+          categoryName={selectedCategoryData.title}
+          onCourseSelect={handleCourseSelect}
+        />
       )}
     </div>
   );

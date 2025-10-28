@@ -5,11 +5,15 @@
  * Uses placeholder data - backend integration coming in future phase.
  */
 
+"use client";
 
+import { use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPlaceholderInjuries } from "@/lib/placeholder-data";
 import { Activity, AlertCircle, Calendar, Clock } from "lucide-react";
+import PlayerBio from "@/components/player/PlayerBio";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface InjuriesPageProps {
   params: Promise<{
@@ -17,8 +21,8 @@ interface InjuriesPageProps {
   }>;
 }
 
-export default async function InjuriesPage({ params }: InjuriesPageProps) {
-  const { playerId } = await params;
+export default function InjuriesPage({ params }: InjuriesPageProps) {
+  const { playerId } = use(params);
   const injuries = getPlaceholderInjuries(playerId);
 
   const getStatusColor = (status: string) => {
@@ -36,6 +40,9 @@ export default async function InjuriesPage({ params }: InjuriesPageProps) {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header */}
+      <PlayerBio playerId={playerId as Id<"players">} />
+
       {/* Data Notice */}
       <Card className="border-primary/50 bg-primary/5">
         <CardContent className="pt-6">

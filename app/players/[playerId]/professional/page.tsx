@@ -5,11 +5,15 @@
  * Uses placeholder data - backend integration coming in future phase.
  */
 
+"use client";
 
+import { use } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPlaceholderProfessional } from "@/lib/placeholder-data";
 import { Briefcase, Award, Calendar } from "lucide-react";
+import PlayerBio from "@/components/player/PlayerBio";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface ProfessionalPageProps {
   params: Promise<{
@@ -17,8 +21,8 @@ interface ProfessionalPageProps {
   }>;
 }
 
-export default async function ProfessionalPage({ params }: ProfessionalPageProps) {
-  const { playerId } = await params;
+export default function ProfessionalPage({ params }: ProfessionalPageProps) {
+  const { playerId } = use(params);
   const professional = getPlaceholderProfessional(playerId);
 
   const getStatusColor = (status: string) => {
@@ -34,6 +38,9 @@ export default async function ProfessionalPage({ params }: ProfessionalPageProps
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header */}
+      <PlayerBio playerId={playerId as Id<"players">} />
+
       {/* Data Notice */}
       <Card className="border-primary/50 bg-primary/5">
         <CardContent className="pt-6">
