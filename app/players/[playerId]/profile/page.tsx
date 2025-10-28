@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { User, Calendar, MapPin, GraduationCap, Ruler, Weight, Activity, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import PlayerBio from "@/components/player/PlayerBio";
 
 interface ProfilePageProps {
   params: Promise<{
@@ -60,6 +61,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header */}
+      <PlayerBio playerId={playerId as Id<"players">} />
+
       {/* Data Notice */}
       <Card className="border-muted bg-muted/20">
         <CardContent className="pt-6">
@@ -213,6 +217,23 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 function ProfileSkeleton() {
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Player Header Skeleton */}
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-0">
+          <div className="h-32 bg-secondary rounded-lg"></div>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+            <Skeleton className="h-24 w-24 sm:h-32 sm:w-32 rounded-full" />
+            <div className="space-y-3 flex-1 text-center sm:text-left">
+              <Skeleton className="h-8 w-48 mx-auto sm:mx-0" />
+              <Skeleton className="h-5 w-32 mx-auto sm:mx-0" />
+              <Skeleton className="h-10 w-full sm:w-24" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Data Notice Skeleton */}
       <Card className="border-muted bg-muted/20">
         <CardContent className="pt-6">

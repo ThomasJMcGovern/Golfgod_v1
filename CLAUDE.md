@@ -83,7 +83,7 @@ Need performance intangibles?        → playerIntangibles
 - `components/player/PlayerKnowledgeHub.tsx` - Knowledge Hub navigation (8 categories)
 - `components/player/KnowledgeCard.tsx` - Reusable category card component
 - `components/player/CategoryExplorer.tsx` - Category-first navigation
-- `components/player/CategoryPlayerDialog.tsx` - Player selection dialog for categories
+- `components/player/CategoryPlayerDialog.tsx` - **Command palette player selection dialog** (uses shadcn/ui Command component)
 - `lib/knowledge-categories.ts` - Shared knowledge category constants
 
 ### Backend (Convex)

@@ -12,6 +12,9 @@ Players (200) → Tournament Results (20K+) → Round Stats (future)
    ├─────────→ Player Course Stats (aggregated career data)
    │                    ↑
    │         Courses (54) ──────────┘
+   │              ↓
+   │              ├──→ courseWinners (winners since 2015)
+   │              └──→ courseMajors (major championships)
    │
    └─────────→ Player Knowledge Hub (6 tables):
                - playerFamily (~200)
@@ -94,8 +97,12 @@ courses
 │   └── Contains: Results at this course
 ├── roundStats (FK: courseId)
 │   └── Contains: All rounds played at this course
-└── playerCourseStats (FK: courseId)
-    └── Contains: All player stats at this course
+├── playerCourseStats (FK: courseId)
+│   └── Contains: All player stats at this course
+├── courseWinners (FK: courseId)
+│   └── Contains: Tournament winners since 2015
+└── courseMajors (FK: courseId)
+    └── Contains: Major championships hosted
 ```
 
 ### **tournamentResults**
@@ -266,6 +273,26 @@ leaderboard.sort((a, b) => {
 ```typescript
 .index("by_name", ["name"])  // Course lookup
 ```
+
+### **courseWinners**
+```typescript
+.index("by_course", ["courseId"])              // All winners at course
+.index("by_course_year", ["courseId", "year"]) // Winners by year
+.index("by_year", ["year"])                    // Winners in year
+```
+
+**When to use**:
+- `by_course`: Tournament winners since 2015 at course (default 50-100 limit)
+- `by_course_year`: Specific year winner lookup
+- `by_year`: All wins across courses in a year
+
+### **courseMajors**
+```typescript
+.index("by_course", ["courseId"])  // Majors hosted at course
+```
+
+**When to use**:
+- `by_course`: List all major championships hosted (typically 0-5 records per course)
 
 ### **pgaTournaments**
 ```typescript
@@ -527,8 +554,17 @@ START: What am I looking for?
 ├─ Tournament schedule/winners?
 │  └─→ pgaTournaments (schedule 2015-2026)
 │
-└─ Course information?
-   └─→ courses (name, location, par, yardage)
+├─ Course information?
+│  └─→ courses (name, location, par, yardage, architect, grass types, green size)
+│
+├─ Course winners since 2015?
+│  └─→ courseWinners (year, tournament, winner, score, earnings)
+│
+├─ Top finishers at course in specific year?
+│  └─→ Use tournamentResults with course filter + year + topN limit
+│
+└─ Major championships hosted?
+   └─→ courseMajors (majorName, yearsHosted[], totalHosted)
 ```
 
 ---
@@ -554,6 +590,9 @@ START: What am I looking for?
 | `playerNearbyCourses` | `courseId` | `courses` | many-to-one |
 | `playerInjuries` | `playerId` | `players` | many-to-one |
 | `playerIntangibles` | `playerId` | `players` | many-to-one |
+| `courseWinners` | `courseId` | `courses` | many-to-one |
+| `courseWinners` | `playerId` | `players` | many-to-one |
+| `courseMajors` | `courseId` | `courses` | many-to-one |
 
 ---
 
@@ -749,6 +788,8 @@ Safe to use `.collect()`:
 - `courses` (54 records)
 - `by_player` queries on `tournamentResults` (~200-500 per player)
 - `by_player_course` queries on `roundStats` (bounded by player + course)
+- `by_course` queries on `courseWinners` (~10-50 per course)
+- `by_course` queries on `courseMajors` (~0-5 per course)
 - **Player Knowledge Hub tables** (all <1K records, bounded by playerId):
   - `playerFamily` (~200 records, one per player)
   - `playerFamilyHistory` (~400 records, ~2 per player)
@@ -760,14 +801,24 @@ Safe to use `.collect()`:
 NOT safe to use `.collect()`:
 - All `tournamentResults` (20K+ records)
 - All `roundStats` (future: 80K+ records)
+- All `courseWinners` (unbounded, use `.take(limit)`)
 
 ---
 
 ## 📅 Schema Version History
 
-**Current Version**: 1.1 (January 2025)
+**Current Version**: 1.2 (January 2025)
 
-**Recent Changes (v1.1)**:
+**Recent Changes (v1.2)**:
+- ✅ Added **Tournament Course Explorer** - Course-focused navigation for tournament pages:
+  - Extended `courses` table with: `architect`, `grassGreens`, `grassFairways`, `avgGreenSize`, `bunkerSandType`, `scorecardPar[]`, `scorecardYardage[]`
+  - `courseWinners` - Tournament winners since 2015 at each course
+  - `courseMajors` - Major championships hosted at each course
+- ✅ Added 6 new course category pages: info, scorecard, conditions, winners, top-finishers, majors
+- ✅ Added CourseSelect component and TournamentCourseExplorer navigation
+- ✅ Added 5 new indexes for course queries (`courseWinners.by_course`, `courseWinners.by_course_year`, `courseWinners.by_year`, `courseMajors.by_course`)
+
+**Previous Changes (v1.1)**:
 - ✅ Added **Player Knowledge Hub** - 6 new tables for comprehensive player data:
   - `playerFamily` - Personal family information (marital status, spouse, children)
   - `playerFamilyHistory` - Family members with golf backgrounds
@@ -778,7 +829,7 @@ NOT safe to use `.collect()`:
 - ✅ Added 12 new indexes optimized for player knowledge queries
 - ✅ All new tables are small (<1K records) - safe for `.collect()` with indexes
 
-**Previous Changes (v1.0)**:
+**Original (v1.0)**:
 - Added `roundStats` table (schema defined, data pending)
 - Added `courses`, `tournamentCourses`, `playerCourseStats` tables
 - Added `by_player_course` composite indexes

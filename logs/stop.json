@@ -574,5 +574,157 @@
     "permission_mode": "bypassPermissions",
     "hook_event_name": "Stop",
     "stop_hook_active": false
+  },
+  {
+    "session_id": "ca3457cd-bbf4-4f0a-bd3e-0b02a18e42e8",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ca3457cd-bbf4-4f0a-bd3e-0b02a18e42e8.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "18da5cf3-2a4b-418b-b1b2-2acda308ab48",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/18da5cf3-2a4b-418b-b1b2-2acda308ab48.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "18da5cf3-2a4b-418b-b1b2-2acda308ab48",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/18da5cf3-2a4b-418b-b1b2-2acda308ab48.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "ea3a7256-f524-41cc-88bd-20dd16f6602c",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/ea3a7256-f524-41cc-88bd-20dd16f6602c.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a006c9e2-b6f1-492d-a327-5068660dfd05",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/a006c9e2-b6f1-492d-a327-5068660dfd05.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "cf0615a9-0823-45ae-a214-03337c48795b",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/cf0615a9-0823-45ae-a214-03337c48795b.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a006c9e2-b6f1-492d-a327-5068660dfd05",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/a006c9e2-b6f1-492d-a327-5068660dfd05.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "80c23eb0-9133-45b7-a255-05c07c13c58e",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/80c23eb0-9133-45b7-a255-05c07c13c58e.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a006c9e2-b6f1-492d-a327-5068660dfd05",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/a006c9e2-b6f1-492d-a327-5068660dfd05.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f24500-6258-4656-9dbe-ede3a4622ea5",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/d2f24500-6258-4656-9dbe-ede3a4622ea5.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "cf0615a9-0823-45ae-a214-03337c48795b",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/cf0615a9-0823-45ae-a214-03337c48795b.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "80c23eb0-9133-45b7-a255-05c07c13c58e",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/80c23eb0-9133-45b7-a255-05c07c13c58e.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "80c23eb0-9133-45b7-a255-05c07c13c58e",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/80c23eb0-9133-45b7-a255-05c07c13c58e.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "cf0615a9-0823-45ae-a214-03337c48795b",
+    "transcript_path": "/Users/tjmcgovern/.claude/projects/-Users-tjmcgovern-golfgod-x-convex/cf0615a9-0823-45ae-a214-03337c48795b.jsonl",
+    "cwd": "/Users/tjmcgovern/golfgod_x_convex",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
   }
 ]

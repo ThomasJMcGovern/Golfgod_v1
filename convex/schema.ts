@@ -205,10 +205,18 @@ export default defineSchema({
     par: v.number(),                         // Course par (e.g., 72)
     yardage: v.optional(v.number()),        // Total yardage
     established: v.optional(v.number()),     // Year established
-    designer: v.optional(v.string()),        // Course designer
+    designer: v.optional(v.string()),        // Course designer (architect)
     type: v.optional(v.string()),           // Course type (links, parkland, etc.)
     grassType: v.optional(v.string()),      // Grass type (bentgrass, bermuda, etc.)
     stimpmeter: v.optional(v.number()),     // Green speed average
+    // New fields for course information explorer
+    architect: v.optional(v.string()),       // Course architect (same as designer, for clarity)
+    grassGreens: v.optional(v.string()),     // Grass type on greens
+    grassFairways: v.optional(v.string()),   // Grass type on fairways
+    avgGreenSize: v.optional(v.number()),    // Average green size in sq. ft.
+    bunkerSandType: v.optional(v.string()),  // Type of bunker sand
+    scorecardPar: v.optional(v.array(v.number())),     // Par for each hole (18 holes)
+    scorecardYardage: v.optional(v.array(v.number())), // Yardage for each hole (18 holes)
   })
     .index("by_name", ["name"]),
 
@@ -306,4 +314,28 @@ export default defineSchema({
     .index("by_tournament_result", ["tournamentResultId"])
     .index("by_player_course", ["playerId", "courseId"])
     .index("by_year", ["year"]),
+
+  // Course Winners table - Historical winners at each course
+  courseWinners: defineTable({
+    courseId: v.id("courses"),
+    year: v.number(),
+    tournament: v.string(),
+    playerId: v.id("players"),
+    playerName: v.string(),
+    score: v.string(),
+    toPar: v.optional(v.number()),
+    earnings: v.optional(v.number()),
+  })
+    .index("by_course", ["courseId"])
+    .index("by_course_year", ["courseId", "year"])
+    .index("by_year", ["year"]),
+
+  // Course Majors table - Major championships hosted at course
+  courseMajors: defineTable({
+    courseId: v.id("courses"),
+    majorName: v.string(), // "Masters", "PGA Championship", "U.S. Open", "The Open Championship"
+    yearsHosted: v.array(v.number()),
+    totalHosted: v.number(),
+  })
+    .index("by_course", ["courseId"]),
 });

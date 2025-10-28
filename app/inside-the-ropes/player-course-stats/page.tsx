@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
+import { Authenticated, Unauthenticated } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -128,9 +129,25 @@ export default function InsideTheRopes() {
   })) || [];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <AppHeader title="Player Stats Per Course" subtitle="Course-specific performance analysis" />
+    <>
+      <Unauthenticated>
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Please Sign In</h2>
+            <p className="text-muted-foreground mb-4">
+              You need to be signed in to view player course statistics.
+            </p>
+            <Button onClick={() => router.push("/signin")}>
+              Sign In
+            </Button>
+          </div>
+        </div>
+      </Unauthenticated>
+
+      <Authenticated>
+        <div className="min-h-screen bg-background">
+          {/* Header */}
+          <AppHeader title="Player Stats Per Course" subtitle="Course-specific performance analysis" />
 
       {/* Main Navigation */}
       <MainNavigation />
@@ -595,6 +612,8 @@ export default function InsideTheRopes() {
         </Card>
       )}
       </div>
-    </div>
+        </div>
+      </Authenticated>
+    </>
   );
 }

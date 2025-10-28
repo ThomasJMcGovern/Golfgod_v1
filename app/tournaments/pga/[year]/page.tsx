@@ -9,6 +9,7 @@ import { Authenticated, Unauthenticated } from "convex/react";
 import { Button } from "@/components/ui/button";
 import AppHeader from "@/components/layout/AppHeader";
 import MainNavigation from "@/components/layout/MainNavigation";
+import TournamentCourseExplorer from "@/components/tournament/TournamentCourseExplorer";
 import {
   Select,
   SelectContent,
@@ -370,6 +371,10 @@ export default function YearTournamentsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full overflow-x-hidden">
             {tournaments ? (
               <div className="space-y-8">
+                {/* Tournament Course Explorer */}
+                <div>
+                  <TournamentCourseExplorer year={year} />
+                </div>
                 {/* Current Tournaments */}
                 <div>
                   <h2 className="text-xl font-bold mb-4">Current Tournaments</h2>
